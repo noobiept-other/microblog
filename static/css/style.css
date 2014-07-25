@@ -2,3 +2,16 @@
     {
     background-color: rgba(201, 219, 237, 0.83);
     }
+
+.horizontalList
+    {
+    list-style-type: none;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    }
+
+.horizontalList > *
+    {
+    display: inline-block;
+    }

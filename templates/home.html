@@ -11,7 +11,7 @@
         {% for post in posts %}
             <tr>
                 <td>{{ post.text }}</td>
-                <td>{{ post.user }}</td>
+                <td><a href="{{ post.user.get_url }}">{{ post.user }}</a></td>
                 <td>{{ post.date_created|naturaltime }}</td>
             </tr>
         {% endfor %}

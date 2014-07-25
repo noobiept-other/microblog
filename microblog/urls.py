@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     url( r'^$', 'microblog.views.home', name= 'home' ),
 
     url( r'^post$', 'microblog.views.post_message', name= 'post' ),
+    url( r'^follow/(?P<username>\w+)$', 'microblog.views.set_follow', name= 'follow' ),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

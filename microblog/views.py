@@ -11,10 +11,22 @@ from microblog.models import Post
 @login_required( login_url= 'accounts:login' )
 def home( request ):
 
-    posts = request.user.post_set.all()[ :5 ]
+    followingUsers = request.user.following.all()
+
+    posts = []
+
+        # get last 5 posts of each
+    for following in followingUsers:
+        posts.extend( following.post_set.all()[ :5 ] )
+
+    def sort_by_date(a, b):
+        return int( (b.date_created - a.date_created).total_seconds() )
+
+        # order by date
+    posts.sort( sort_by_date )
 
     context = {
-        'posts': posts
+        'posts': posts[ :5 ]
     }
 
     utilities.get_message( request, context )
@@ -46,3 +58,35 @@ def post_message( request ):
     }
 
     return render( request, 'post.html', context )
+
+
+@login_required( login_url= 'accounts:login' )
+def set_follow( request, username ):
+
+    userModel = get_user_model()
+
+    if username == request.user.username:
+        raise Http404( "Can't follow yourself." )
+
+    try:
+        userToFollow = userModel.objects.get( username= username )
+
+    except userModel.DoesNotExist:
+        raise Http404( "User doesn't exist." )
+
+
+        # figure out if we're following or un-following
+    try:
+        request.user.following.get( username= username )
+
+    except userModel.DoesNotExist:
+        request.user.following.add( userToFollow )
+
+        utilities.set_message( request, '{} followed'.format( userToFollow ) )
+
+    else:
+        request.user.following.remove( userToFollow )
+
+        utilities.set_message( request, '{} un-followed'.format( userToFollow ) )
+
+    return HttpResponseRedirect( reverse( 'home' ) )

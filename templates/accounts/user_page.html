@@ -6,15 +6,26 @@
     <h2>
         {{ pageUser.username }}
 
-        {% if user.is_staff %}
-            <a href="{% url 'accounts:set_moderator' pageUser.username %}">
-                {% if pageUser.is_moderator %}
-                    un-mod
-                {% else %}
-                    mod
-                {% endif %}
-            </a>
-        {% endif %}
+        <ul class="horizontalList">
+            {% if user.is_staff %}
+            <li>
+                <a href="{% url 'accounts:set_moderator' pageUser.username %}">
+                    {% if pageUser.is_moderator %}
+                        un-mod
+                    {% else %}
+                        mod
+                    {% endif %}
+                </a>
+            </li>
+            {% endif %}
+            {% if user.is_authenticated and user.username != pageUser.username %}
+            <li>
+                <a href="{% url 'follow' pageUser.username %}">
+                    follow/un-follow
+                </a>
+            </li>
+            {% endif %}
+        </ul>
     </h2>
 
     <p>User since: {{ pageUser.date_joined }} ({{ pageUser.date_joined|naturaltime }})</p>
@@ -29,6 +40,22 @@
         {% endif %}
         </ul>
     {% endif %}
+
+
+{% if posts %}
+    <table>
+        {% for post in posts %}
+            <tr>
+                <td>{{ post.text }}</td>
+                <td><a href="{{ post.user.get_url }}">{{ post.user }}</a></td>
+                <td>{{ post.date_created|naturaltime }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% else %}
+    <p>No posts.</p>
+{% endif %}
 
 
 {% endblock %}

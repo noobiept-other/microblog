@@ -42,7 +42,8 @@ def user_page( request, username ):
         raise Http404( "User doesn't exist." )
 
     context = {
-        'pageUser': user
+        'pageUser': user,
+        'posts': user.post_set.all()[ :5 ]
     }
 
     utilities.get_message( request, context )

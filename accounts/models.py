@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 class Account( AbstractUser ):
 
     is_moderator = models.BooleanField( default= False )
+    following = models.ManyToManyField( settings.AUTH_USER_MODEL, symmetrical= False )
 
     def get_url(self):
         return reverse( 'accounts:user_page', args= [ self.username ] )
