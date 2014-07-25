@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Post</h1>
+
+{% if form.errors %}
+    <table>
+        {% for field in form %}
+            <tr>
+                <td>{{ field.name }}</td>
+                <td>{{ field.errors }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+
+<form method="post" action="{% url 'post' %}">
+    {% csrf_token %}
+
+    <table>
+        <tr>
+            <td>{{ form.text }}</td>
+        </tr>
+    </table>
+
+    <input type="submit" value="post" />
+    <input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+
+
+{% endblock %}

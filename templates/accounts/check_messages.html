@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block scripts %}
+    {% load static %}
+
+    <script type="text/javascript" src="{% static 'accounts/check_messages.js' %}"></script>
+    <script type="text/javascript" src="{% static 'accounts/tooltip.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'accounts/style.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+<h2>Private messages</h2>
+
+{% if messages %}
+
+    <table id="CheckMessagesTable">
+        <tr>
+            <th>from</th>
+            <th>title</th>
+            <th>date</th>
+        </tr>
+        {% for message in messages %}
+            <tr class="clickableRow contentPreview" data-url="{{ message.get_url }}" data-content="{{ message.content|linebreaksbr|truncatewords:20 }}">
+                <td><a href="{{ message.get_url }}">{{ message.sender }}</a></td>
+                <td>{{ message.title|truncatewords:20 }}</td>
+                <td>{{ message.date_created|naturaltime }}</td>
+                <td><a href="{% url 'accounts:remove_message' message.id %}">X</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% else %}
+    <p>No messages.</p>
+{% endif %}
+
+{% endblock %}
