@@ -46,7 +46,7 @@ def post_message( request ):
         if form.is_valid():
 
             text = form.cleaned_data[ 'text' ]
-            categories = re.findall( r'#\w+', text )
+            categories = re.findall( r'#(\w+)', text )
 
             post = Post( user= request.user, text= text )
             post.save()
@@ -109,7 +109,7 @@ def set_follow( request, username ):
 def show_category( request, categoryName ):
 
     try:
-        category = Category.objects.get( name= '#' + categoryName )
+        category = Category.objects.get( name= categoryName )
 
     except Category.DoesNotExist:
         raise Http404( "Category doesn't exist." )

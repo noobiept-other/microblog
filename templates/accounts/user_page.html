@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load humanize %}
+{% load microblog_tags %}
 
 {% block content %}
 
@@ -49,7 +50,7 @@
     <table>
         {% for post in posts %}
             <tr>
-                <td>{{ post.text }}</td>
+                <td>{{ post.text|category_links }}</td>
                 <td><a href="{{ post.user.get_url }}">{{ post.user }}</a></td>
                 <td>{{ post.date_created|naturaltime }}</td>
             </tr>
