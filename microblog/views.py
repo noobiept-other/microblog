@@ -4,9 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 
+import re
+
 import microblog.utilities as utilities
 from microblog.forms import PostForm
-from microblog.models import Post
+from microblog.models import Post, Category
 
 @login_required( login_url= 'accounts:login' )
 def home( request ):
@@ -44,9 +46,21 @@ def post_message( request ):
         if form.is_valid():
 
             text = form.cleaned_data[ 'text' ]
+            categories = re.findall( r'#\w+', text )
 
             post = Post( user= request.user, text= text )
             post.save()
+
+            for category in categories:
+
+                try:
+                    categoryElement = Category.objects.get( name= category )
+
+                except Category.DoesNotExist:
+                    categoryElement = Category( name= category )
+                    categoryElement.save()
+
+                post.categories.add( categoryElement )
 
             return HttpResponseRedirect( reverse( 'home' ) )
 
@@ -90,3 +104,19 @@ def set_follow( request, username ):
         utilities.set_message( request, '{} un-followed'.format( userToFollow ) )
 
     return HttpResponseRedirect( reverse( 'home' ) )
+
+
+def show_category( request, categoryName ):
+
+    try:
+        category = Category.objects.get( name= '#' + categoryName )
+
+    except Category.DoesNotExist:
+        raise Http404( "Category doesn't exist." )
+
+    context = {
+        'categoryName': categoryName,
+        'posts': category.post_set.all()
+    }
+
+    return render( request, 'category.html', context )

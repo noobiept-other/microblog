@@ -43,7 +43,7 @@ def user_page( request, username ):
 
     context = {
         'pageUser': user,
-        'posts': user.post_set.all()[ :5 ]
+        'posts': user.post_set.all()[ :5 ],
     }
 
     utilities.get_message( request, context )

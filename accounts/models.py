@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.utils import timezone
 from django.core.urlresolvers import reverse
+from django.contrib.auth import get_user_model
 
 class Account( AbstractUser ):
 
@@ -11,6 +12,16 @@ class Account( AbstractUser ):
 
     def get_url(self):
         return reverse( 'accounts:user_page', args= [ self.username ] )
+
+    def get_followers_count(self):
+
+        userModel = get_user_model()
+
+        return userModel.objects.filter( following__username= self.username ).count()
+
+
+    def get_following_count(self):
+        return self.following.count()
 
 
 class PrivateMessage( models.Model ):

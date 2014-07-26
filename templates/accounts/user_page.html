@@ -30,6 +30,9 @@
 
     <p>User since: {{ pageUser.date_joined }} ({{ pageUser.date_joined|naturaltime }})</p>
 
+    <p>Followers: {{ pageUser.get_followers_count }}</p>
+    <p>Following: {{ pageUser.get_following_count }}</p>
+
     {% if user.is_authenticated %}
         <ul>
         {% if user.username == pageUser.username %}

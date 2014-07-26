@@ -3,16 +3,13 @@
 
 {% block content %}
 
-<p>Hi</p>
-
-
 {% if posts %}
-    <table>
+    <table id="PostTable">
         {% for post in posts %}
-            <tr>
-                <td>{{ post.text }}</td>
-                <td><a href="{{ post.user.get_url }}">{{ post.user }}</a></td>
-                <td>{{ post.date_created|naturaltime }}</td>
+            <tr class="post">
+                <td class="postText">{{ post.text }}</td>
+                <td class="postUser"><a href="{{ post.user.get_url }}">{{ post.user }}</a></td>
+                <td class="postDate">{{ post.date_created|naturaltime }}</td>
             </tr>
         {% endfor %}
     </table>
@@ -20,6 +17,5 @@
 {% else %}
     <p>No posts.</p>
 {% endif %}
-
 
 {% endblock %}
