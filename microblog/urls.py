@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url( r'^follow/(?P<username>\w+)$', 'microblog.views.set_follow', name= 'follow' ),
     url( r'^category/(?P<categoryName>\w+)$', 'microblog.views.show_category', name= 'show_category' ),
     url( r'^people$', 'microblog.views.show_people', name= 'people' ),
+    url( r'^categories$', 'microblog.views.show_categories', name= 'categories' ),
 
     url( r'^followers$', 'accounts.views.show_followers', name= 'show_followers' ),
     url( r'^following$', 'accounts.views.show_following', name= 'show_following' ),

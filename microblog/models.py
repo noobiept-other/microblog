@@ -10,6 +10,9 @@ class Category( models.Model ):
     def __unicode__(self):
         return self.name
 
+    def get_url(self):
+        return reverse( 'show_category', args= [ self.name ] )
+
 class Post( models.Model ):
 
     user = models.ForeignKey( settings.AUTH_USER_MODEL )

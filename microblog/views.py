@@ -142,3 +142,14 @@ def show_people( request ):
     }
 
     return render( request, 'people.html', context )
+
+@login_required
+def show_categories( request ):
+
+    categories = Category.objects.all()
+
+    context = {
+        'categories': categories
+    }
+
+    return render( request, 'categories.html', context )
