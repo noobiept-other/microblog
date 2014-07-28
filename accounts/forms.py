@@ -68,3 +68,8 @@ class PrivateMessageForm( forms.Form ):
 
     title = forms.CharField( max_length= 100 )
     content = forms.CharField( max_length= 500, widget= forms.Textarea )
+
+
+class EditAccountForm( forms.Form ):
+
+    info = forms.CharField( max_length= 200, widget= forms.Textarea )

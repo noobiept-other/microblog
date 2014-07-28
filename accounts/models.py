@@ -9,6 +9,7 @@ class Account( AbstractUser ):
 
     is_moderator = models.BooleanField( default= False )
     following = models.ManyToManyField( settings.AUTH_USER_MODEL, symmetrical= False )
+    info = models.CharField( max_length= 200, default= '', blank= True )
 
     def get_url(self):
         return reverse( 'accounts:user_page', args= [ self.username ] )

@@ -10,6 +10,7 @@
         {% for user in users %}
         <tr>
             <td><a href="{{ user.get_url }}">{{ user.username }}</a></td>
+            <td>{{ user.info }}</td>
             <td><a href="{% url 'follow' user.username %}">
                 {% if request.user|is_following:user.username %}
                     un-follow

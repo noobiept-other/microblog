@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 
-from accounts.forms import MyUserCreationForm, PrivateMessageForm
+from accounts.forms import MyUserCreationForm, PrivateMessageForm, EditAccountForm
 from accounts.models import PrivateMessage
 from accounts.decorators import must_be_staff
 import microblog.utilities as utilities
@@ -157,3 +157,29 @@ def password_changed( request ):
     utilities.set_message( request, 'Password changed' )
 
     return HttpResponseRedirect( reverse( 'home' ) )
+
+
+@login_required
+def edit_account( request ):
+
+    if request.method == 'POST':
+
+        form = EditAccountForm( request.POST )
+
+        if form.is_valid():
+
+            info = form.cleaned_data[ 'info' ]
+
+            request.user.info = info
+            request.user.save()
+
+            return HttpResponseRedirect( request.user.get_url() )
+
+    else:
+        form = EditAccountForm( initial= { 'info': request.user.info } )
+
+    context = {
+        'form': form
+    }
+
+    return render( request, 'accounts/edit_account.html', context )

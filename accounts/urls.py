@@ -14,4 +14,5 @@ urlpatterns = patterns('',
     url( r'^check_message/(?P<messageId>\w+)$', 'accounts.views.open_message', name= 'open_message' ),
     url( r'^remove_message/(?P<messageId>\w+)$', 'accounts.views.remove_message', name= 'remove_message' ),
     url( r'^set_moderator/(?P<username>\w+)$', 'accounts.views.set_moderator', name= 'set_moderator' ),
+    url( r'^edit_account$', 'accounts.views.edit_account', name= 'edit' ),
 )

@@ -19,36 +19,32 @@
                 </a>
             </li>
             {% endif %}
-            {% if user.is_authenticated and user.username != pageUser.username %}
-            <li>
-                <a href="{% url 'follow' pageUser.username %}">
-                    {% if request.user|is_following:pageUser.username %}
-                        un-follow
-                    {% else %}
-                        follow
-                    {% endif %}
-                </a>
-            </li>
+            {% if user.is_authenticated %}
+                {% if user.username != pageUser.username %}
+                <li>
+                    <a href="{% url 'follow' pageUser.username %}">
+                        {% if request.user|is_following:pageUser.username %}
+                            un-follow
+                        {% else %}
+                            follow
+                        {% endif %}
+                    </a>
+                </li>
+                <li><a href="{% url 'accounts:send_message' pageUser.username %}">Send private message</a></li>
+            {% else %}
+                <li><a href="{% url 'accounts:edit' %}">edit account</a></li>
+                <li><a href="{% url 'accounts:check_message' %}">See messages</a></li>
+                {% endif %}
             {% endif %}
         </ul>
     </h2>
 
     <p>User since: {{ pageUser.date_joined }} ({{ pageUser.date_joined|naturaltime }})</p>
 
+    <p>{{ pageUser.info }}</p>
+
     <p>Followers: {{ pageUser.get_followers_count }}</p>
     <p>Following: {{ pageUser.get_following_count }}</p>
-
-    {% if user.is_authenticated %}
-        <ul>
-        {% if user.username == pageUser.username %}
-            <li><a href="{% url 'accounts:check_message' %}">See messages</a></li>
-            <li><a href="{% url 'accounts:change_password' %}">change password</a></li>
-        {% else %}
-            <li><a href="{% url 'accounts:send_message' pageUser.username %}">Send private message</a></li>
-        {% endif %}
-        </ul>
-    {% endif %}
-
 
 {% if posts %}
     <table>
