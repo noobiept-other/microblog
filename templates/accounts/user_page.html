@@ -39,6 +39,10 @@
         </ul>
     </h2>
 
+    {% if pageUser.image %}
+        <img src="{{ MEDIA_URL }}{{ pageUser.image }}" />
+    {% endif %}
+
     <p>User since: {{ pageUser.date_joined }} ({{ pageUser.date_joined|naturaltime }})</p>
 
     <p>{{ pageUser.info }}</p>
@@ -60,6 +64,9 @@
     <table>
         {% for post in posts %}
             <tr class="post">
+                {% if post.user.image %}
+                    <td><img class="postProfileImage" src="{{ MEDIA_URL }}{{ post.user.image }}" /></td>
+                {% endif %}
                 <td class="postText">
                     {{ post.text|category_links }}
                     {% if post.image %}

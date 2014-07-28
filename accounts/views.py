@@ -194,13 +194,18 @@ def edit_account( request ):
 
     if request.method == 'POST':
 
-        form = EditAccountForm( request.POST )
+        form = EditAccountForm( request.POST, request.FILES )
 
         if form.is_valid():
 
             info = form.cleaned_data[ 'info' ]
+            image = request.FILES.get( 'image' )
 
             request.user.info = info
+
+            if image:
+                request.user.image = image
+
             request.user.save()
 
             return HttpResponseRedirect( request.user.get_url() )

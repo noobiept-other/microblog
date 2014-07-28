@@ -4,19 +4,29 @@
 
 <h2>{{ user.username }}</h2>
 
+{% if user.image %}
+    <img src="{{ MEDIA_URL }}{{ user.image }}" />
+{% else %}
+    <p>no profile image.</p>
+{% endif %}
+
 <ul>
     <li><a href="{% url 'accounts:change_password' %}">change password</a></li>
 </ul>
 
 
 <h4>Update account</h4>
-<form method="post" action="{% url 'accounts:edit' %}">
+<form method="post" action="{% url 'accounts:edit' %}" enctype="multipart/form-data">
     {% csrf_token %}
 
     <table>
         <tr>
             <td>{{ form.info.label_tag }}</td>
             <td>{{ form.info }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.image.label_tag }}</td>
+            <td>{{ form.image }}</td>
         </tr>
     </table>
 

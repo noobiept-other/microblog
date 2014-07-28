@@ -9,6 +9,9 @@
     <table>
         {% for user in users %}
         <tr>
+            {% if user.image %}
+                <td><img class="postProfileImage" src="{{ MEDIA_URL }}{{ user.image }}" /></td>
+            {% endif %}
             <td><a href="{{ user.get_url }}">{{ user.username }}</a></td>
             <td>{{ user.info }}</td>
             <td><a href="{% url 'follow' user.username %}">

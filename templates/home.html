@@ -8,6 +8,9 @@
     <table id="PostTable">
         {% for post in posts %}
             <tr class="post">
+                {% if post.user.image %}
+                    <td><img class="postProfileImage" src="{{ MEDIA_URL }}{{ post.user.image }}" /></td>
+                {% endif %}
                 <td class="postText">
                     {{ post.text|category_links }}
                     {% if post.image %}

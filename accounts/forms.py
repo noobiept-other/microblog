@@ -73,3 +73,4 @@ class PrivateMessageForm( forms.Form ):
 class EditAccountForm( forms.Form ):
 
     info = forms.CharField( max_length= 200, widget= forms.Textarea )
+    image = forms.FileField( label= 'image', help_text= 'profile image', required= False )
