@@ -14,15 +14,17 @@ class Account( AbstractUser ):
     def get_url(self):
         return reverse( 'accounts:user_page', args= [ self.username ] )
 
-    def get_followers_count(self):
+    def get_followers(self):
 
         userModel = get_user_model()
 
-        return userModel.objects.filter( following__username= self.username ).count()
+        return userModel.objects.filter( following__username= self.username )
 
+    def get_following(self):
+        return self.following.all()
 
-    def get_following_count(self):
-        return self.following.count()
+    def get_post_count(self):
+        return self.post_set.count()
 
     def is_following(self, username):
 

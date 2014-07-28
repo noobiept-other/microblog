@@ -44,11 +44,41 @@ def user_page( request, username ):
     context = {
         'pageUser': user,
         'posts': user.post_set.all()[ :5 ],
+        'postSelected': True
     }
 
     utilities.get_message( request, context )
 
     return render( request, 'accounts/user_page.html', context )
+
+@login_required
+def show_followers( request ):
+
+    followers = request.user.get_followers()
+
+    context = {
+        'pageUser': request.user,
+        'users': followers,
+        'followersSelected': True
+    }
+
+    return render( request, 'accounts/user_page.html', context )
+
+
+@login_required
+def show_following( request ):
+
+    following = request.user.get_following()
+
+    context = {
+        'pageUser': request.user,
+        'users': following,
+        'followingSelected': True
+    }
+
+    return render( request, 'accounts/user_page.html', context )
+
+
 
 @login_required
 def send_private_message( request, username ):

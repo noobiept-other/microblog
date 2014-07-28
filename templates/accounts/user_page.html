@@ -43,8 +43,18 @@
 
     <p>{{ pageUser.info }}</p>
 
-    <p>Followers: {{ pageUser.get_followers_count }}</p>
-    <p>Following: {{ pageUser.get_following_count }}</p>
+
+<ul class="horizontalList">
+    <li {% if postSelected %}class="entrySelected"{% endif %}>
+        <a href="{{ pageUser.get_url }}">posts: {{ pageUser.get_post_count }}</a>
+    </li>
+    <li {% if followersSelected %}class="entrySelected"{% endif %}>
+        <a href="{% url 'show_followers' %}">Followers: {{ pageUser.get_followers.count }}</a>
+    </li>
+    <li {% if followingSelected %}class="entrySelected"{% endif %}>
+        <a href="{% url 'show_following' %}">Following: {{ pageUser.get_following.count }}</a>
+    </li>
+</ul>
 
 {% if posts %}
     <table>
@@ -56,9 +66,24 @@
             </tr>
         {% endfor %}
     </table>
+{% endif %}
 
-{% else %}
-    <p>No posts.</p>
+{% if users %}
+    <table>
+        {% for user in users %}
+        <tr>
+            <td><a href="{{ user.get_url }}">{{ user.username }}</a></td>
+            <td>{{ user.info }}</td>
+            <td><a href="{% url 'follow' user.username %}">
+                {% if request.user|is_following:user.username %}
+                    un-follow
+                {% else %}
+                    follow
+                {% endif %}
+            </a></td>
+        </tr>
+        {% endfor %}
+    </table>
 {% endif %}
 
 
