@@ -41,14 +41,15 @@ def post_message( request ):
 
     if request.method == 'POST':
 
-        form = PostForm( request.POST )
+        form = PostForm( request.POST, request.FILES )
 
         if form.is_valid():
 
             text = form.cleaned_data[ 'text' ]
             categories = re.findall( r'#(\w+)', text )
+            image = request.FILES.get( 'image' )
 
-            post = Post( user= request.user, text= text )
+            post = Post( user= request.user, text= text, image= image )
             post.save()
 
             for category in categories:

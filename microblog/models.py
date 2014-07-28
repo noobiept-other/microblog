@@ -17,6 +17,7 @@ class Post( models.Model ):
 
     user = models.ForeignKey( settings.AUTH_USER_MODEL )
     text = models.TextField( max_length= 200 )
+    image = models.FileField( upload_to= 'images/%Y_%m_%d', blank= True )
     date_created = models.DateTimeField( default= lambda: timezone.localtime( timezone.now() ) )
     categories = models.ManyToManyField( Category )
 

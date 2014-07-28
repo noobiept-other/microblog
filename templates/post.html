@@ -15,12 +15,13 @@
     </table>
 {% endif %}
 
-<form method="post" action="{% url 'post' %}">
+<form method="post" action="{% url 'post' %}" enctype="multipart/form-data">
     {% csrf_token %}
 
     <table>
         <tr>
             <td>{{ form.text }}</td>
+            <td>{{ form.image }}</td>
         </tr>
     </table>
 

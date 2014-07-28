@@ -59,10 +59,15 @@
 {% if posts %}
     <table>
         {% for post in posts %}
-            <tr>
-                <td>{{ post.text|category_links }}</td>
-                <td><a href="{{ post.user.get_url }}">{{ post.user }}</a></td>
-                <td>{{ post.date_created|naturaltime }}</td>
+            <tr class="post">
+                <td class="postText">
+                    {{ post.text|category_links }}
+                    {% if post.image %}
+                        <img src="{{ MEDIA_URL }}{{ post.image }}" />
+                    {% endif %}
+                </td>
+                <td class="postUser"><a href="{{ post.user.get_url }}">{{ post.user }}</a></td>
+                <td class="postDate">{{ post.date_created|naturaltime }}</td>
             </tr>
         {% endfor %}
     </table>
