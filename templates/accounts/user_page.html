@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load humanize %}
-{% load microblog_tags %}
+{% load microblog_filters %}
 
 {% block content %}
 
@@ -22,7 +22,11 @@
             {% if user.is_authenticated and user.username != pageUser.username %}
             <li>
                 <a href="{% url 'follow' pageUser.username %}">
-                    follow/un-follow
+                    {% if request.user|is_following:pageUser.username %}
+                        un-follow
+                    {% else %}
+                        follow
+                    {% endif %}
                 </a>
             </li>
             {% endif %}

@@ -21,6 +21,8 @@
         <a href="{% url 'accounts:login' %}?next={{ request.get_full_path|urlencode }}">login</a>
     {% endif %}
 
+    <a href="{% url 'people' %}">find people</a>
+
     <a href="{% url 'post' %}">post</a>
 </div>
 

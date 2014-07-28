@@ -10,7 +10,7 @@ import microblog.utilities as utilities
 from microblog.forms import PostForm
 from microblog.models import Post, Category
 
-@login_required( login_url= 'accounts:login' )
+@login_required
 def home( request ):
 
     followingUsers = request.user.following.all()
@@ -36,7 +36,7 @@ def home( request ):
     return render( request, 'home.html', context )
 
 
-@login_required( login_url= 'accounts:login' )
+@login_required
 def post_message( request ):
 
     if request.method == 'POST':
@@ -74,7 +74,7 @@ def post_message( request ):
     return render( request, 'post.html', context )
 
 
-@login_required( login_url= 'accounts:login' )
+@login_required
 def set_follow( request, username ):
 
     userModel = get_user_model()
@@ -106,6 +106,7 @@ def set_follow( request, username ):
     return HttpResponseRedirect( reverse( 'home' ) )
 
 
+@login_required
 def show_category( request, categoryName ):
 
     try:
@@ -120,3 +121,24 @@ def show_category( request, categoryName ):
     }
 
     return render( request, 'category.html', context )
+
+
+@login_required
+def show_people( request ):
+
+    userModel = get_user_model()
+
+    following = []
+
+        # don't consider the people you're already following
+    for people in request.user.following.all():
+        following.append( people.username )
+
+        # and yourself as well
+    following.append( request.user.username )
+
+    context = {
+        'users': userModel.objects.exclude( username__in= following )
+    }
+
+    return render( request, 'people.html', context )

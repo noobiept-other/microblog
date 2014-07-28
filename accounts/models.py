@@ -23,6 +23,18 @@ class Account( AbstractUser ):
     def get_following_count(self):
         return self.following.count()
 
+    def is_following(self, username):
+
+        userModel = get_user_model()
+
+        try:
+            self.following.get( username= username )
+
+        except userModel.DoesNotExist:
+            return False
+
+        else:
+            return True
 
 class PrivateMessage( models.Model ):
 

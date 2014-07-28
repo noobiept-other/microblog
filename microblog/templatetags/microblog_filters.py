@@ -24,3 +24,9 @@ def category_links( text ):
     result = re.sub( r'#(\w+)', addLink, text )
 
     return mark_safe( result )
+
+
+@register.filter
+def is_following( user, userToCheck ):
+
+    return user.is_following( userToCheck )

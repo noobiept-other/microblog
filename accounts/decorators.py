@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 def must_be_moderator( function ):
 
-    @login_required( login_url= 'accounts:login' )
+    @login_required
     def func_wrapper( request, *args, **kwargs ):
         if not request.user.is_moderator:
             return HttpResponseForbidden( 'Not a moderator.' )
@@ -14,7 +14,7 @@ def must_be_moderator( function ):
 
 def must_be_staff( function ):
 
-    @login_required( login_url= 'accounts:login' )
+    @login_required
     def func_wrapper( request, *args, **kwargs ):
         if not request.user.is_staff:
             return HttpResponseForbidden( "Not a staff member." )
