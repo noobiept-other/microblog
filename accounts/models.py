@@ -24,8 +24,8 @@ class Account( AbstractUser ):
     def get_following(self):
         return self.following.all()
 
-    def get_post_count(self):
-        return self.post_set.count()
+    def get_message_count(self):
+        return self.post_set.count() + self.thread_set.count()
 
     def is_following(self, username):
 
@@ -39,6 +39,47 @@ class Account( AbstractUser ):
 
         else:
             return True
+
+
+    def get_last_messages(self):
+        """
+            Returns the last messages (thread/post) by the user
+        """
+
+        messages = []
+        messages.extend( self.thread_set.all()[ :5 ] )
+        messages.extend( self.post_set.all()[ :5 ] )
+
+        def sort_by_date(a, b):
+            return int( (b.date_created - a.date_created).total_seconds() )
+
+        messages.sort( sort_by_date )
+
+        return messages[ :5 ]
+
+
+    def get_last_following_messages(self):
+        """
+            Returns the last messages (thread/post) written by users we're following
+        """
+
+        followingUsers = self.following.all()
+        messages = []
+
+            # get last 5 posts of each
+        for following in followingUsers:
+            messages.extend( following.thread_set.all()[ :5 ] )
+            messages.extend( following.post_set.all()[ :5 ] )
+
+        def sort_by_date(a, b):
+            return int( (b.date_created - a.date_created).total_seconds() )
+
+        messages.sort( sort_by_date )
+
+        return messages[ :5 ]
+
+
+
 
 class PrivateMessage( models.Model ):
 

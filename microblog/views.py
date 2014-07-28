@@ -8,27 +8,13 @@ import re
 
 import microblog.utilities as utilities
 from microblog.forms import PostForm
-from microblog.models import Post, Category
+from microblog.models import Thread, Post, Category
 
 @login_required
 def home( request ):
 
-    followingUsers = request.user.following.all()
-
-    posts = []
-
-        # get last 5 posts of each
-    for following in followingUsers:
-        posts.extend( following.post_set.all()[ :5 ] )
-
-    def sort_by_date(a, b):
-        return int( (b.date_created - a.date_created).total_seconds() )
-
-        # order by date
-    posts.sort( sort_by_date )
-
     context = {
-        'posts': posts[ :5 ]
+        'messages': request.user.get_last_following_messages()
     }
 
     utilities.get_message( request, context )
@@ -49,8 +35,8 @@ def post_message( request ):
             categories = re.findall( r'#(\w+)', text )
             image = request.FILES.get( 'image' )
 
-            post = Post( user= request.user, text= text, image= image )
-            post.save()
+            thread = Thread( user= request.user, text= text, image= image )
+            thread.save()
 
             for category in categories:
 
@@ -61,7 +47,7 @@ def post_message( request ):
                     categoryElement = Category( name= category )
                     categoryElement.save()
 
-                post.categories.add( categoryElement )
+                thread.categories.add( categoryElement )
 
             return HttpResponseRedirect( reverse( 'home' ) )
 
@@ -116,9 +102,19 @@ def show_category( request, categoryName ):
     except Category.DoesNotExist:
         raise Http404( "Category doesn't exist." )
 
+    messages = []
+
+    messages.extend( category.thread_set.all() )
+    messages.extend( category.post_set.all() )
+
+    def sort_by_date(a, b):
+        return int( (b.date_created - a.date_created).total_seconds() )
+
+    messages.sort( sort_by_date )
+
     context = {
         'categoryName': categoryName,
-        'posts': category.post_set.all()
+        'messages': messages
     }
 
     return render( request, 'category.html', context )
@@ -154,3 +150,21 @@ def show_categories( request ):
     }
 
     return render( request, 'categories.html', context )
+
+
+def show_message( request, identifier ):
+
+    try:
+        thread = Thread.objects.get( identifier= identifier )
+
+    except Thread.DoesNotExist:
+        raise Http404( "Invalid identifier." )
+
+    messages = [ thread ]
+    messages.extend( thread.post_set.all() )
+
+    context = {
+        'messages': messages
+    }
+
+    return render( request, 'show_message.html', context )

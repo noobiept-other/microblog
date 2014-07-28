@@ -43,7 +43,7 @@ def user_page( request, username ):
 
     context = {
         'pageUser': user,
-        'posts': user.post_set.all()[ :5 ],
+        'messages': user.get_last_messages(),
         'postSelected': True
     }
 

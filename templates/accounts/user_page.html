@@ -50,7 +50,7 @@
 
 <ul class="horizontalList">
     <li {% if postSelected %}class="entrySelected"{% endif %}>
-        <a href="{{ pageUser.get_url }}">posts: {{ pageUser.get_post_count }}</a>
+        <a href="{{ pageUser.get_url }}">messages: {{ pageUser.get_message_count }}</a>
     </li>
     <li {% if followersSelected %}class="entrySelected"{% endif %}>
         <a href="{% url 'show_followers' %}">Followers: {{ pageUser.get_followers.count }}</a>
@@ -60,25 +60,7 @@
     </li>
 </ul>
 
-{% if posts %}
-    <table>
-        {% for post in posts %}
-            <tr class="post">
-                {% if post.user.image %}
-                    <td><img class="postProfileImage" src="{{ MEDIA_URL }}{{ post.user.image }}" /></td>
-                {% endif %}
-                <td class="postText">
-                    {{ post.text|category_links }}
-                    {% if post.image %}
-                        <img src="{{ MEDIA_URL }}{{ post.image }}" />
-                    {% endif %}
-                </td>
-                <td class="postUser"><a href="{{ post.user.get_url }}">{{ post.user }}</a></td>
-                <td class="postDate">{{ post.date_created|naturaltime }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-{% endif %}
+{% include "messages.html" %}
 
 {% if users %}
     <table>

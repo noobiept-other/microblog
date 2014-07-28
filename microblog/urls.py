@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url( r'^category/(?P<categoryName>\w+)$', 'microblog.views.show_category', name= 'show_category' ),
     url( r'^people$', 'microblog.views.show_people', name= 'people' ),
     url( r'^categories$', 'microblog.views.show_categories', name= 'categories' ),
+    url( r'^message/(?P<identifier>[\w-]+)$', 'microblog.views.show_message', name= 'show_message' ),
 
     url( r'^followers$', 'accounts.views.show_followers', name= 'show_followers' ),
     url( r'^following$', 'accounts.views.show_following', name= 'show_following' ),
