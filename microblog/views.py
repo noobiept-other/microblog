@@ -23,7 +23,7 @@ def home( request ):
 
 
 @login_required
-def post_message( request ):
+def post_message( request, threadIdentifier= None ):
 
     if request.method == 'POST':
 
@@ -35,8 +35,19 @@ def post_message( request ):
             categories = re.findall( r'#(\w+)', text )
             image = request.FILES.get( 'image' )
 
-            thread = Thread( user= request.user, text= text, image= image )
-            thread.save()
+            if threadIdentifier:
+                try:
+                    thread = Thread.objects.get( identifier= threadIdentifier )
+
+                except Thread.DoesNotExist:
+                    raise Http404( "Invalid thread identifier." )
+
+                message = Post( user= request.user, text= text, image= image, thread= thread, position= thread.post_set.count() + 2 )   # the +2 is because the position starts at 1 rather than 0, and the thread itself is considered the position 1 (so posts start at 2+)
+                message.save()
+
+            else:
+                message = Thread( user= request.user, text= text, image= image )
+                message.save()
 
             for category in categories:
 
@@ -47,15 +58,16 @@ def post_message( request ):
                     categoryElement = Category( name= category )
                     categoryElement.save()
 
-                thread.categories.add( categoryElement )
+                message.categories.add( categoryElement )
 
-            return HttpResponseRedirect( reverse( 'home' ) )
+            return HttpResponseRedirect( message.get_url() )
 
     else:
         form = PostForm()
 
     context = {
-        'form': form
+        'form': form,
+        'threadIdentifier': threadIdentifier
     }
 
     return render( request, 'post.html', context )

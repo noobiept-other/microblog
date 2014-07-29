@@ -31,6 +31,11 @@
     min-width: 500px;
     }
 
+.postText-content
+    {
+    margin: 20px 0;
+    }
+
 .postText img
     {
     max-height: 200px;

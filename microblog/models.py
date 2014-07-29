@@ -29,8 +29,10 @@ class Thread( models.Model ):
         return self.text
 
     def get_url(self):
-
         return reverse( 'show_message', args= [ self.identifier ] )
+
+    def get_thread_identifier(self):
+        return self.identifier
 
     class Meta:
         ordering = [ '-date_created' ]
@@ -44,13 +46,17 @@ class Post( models.Model ):
     date_created = models.DateTimeField( default= lambda: timezone.localtime( timezone.now() ) )
     categories = models.ManyToManyField( Category )
     thread = models.ForeignKey( Thread )
-    position = models.IntegerField()    #HERE
+    position = models.IntegerField()
+    identifier = models.CharField( max_length= 40, unique= True, default= uuid.uuid4 )
 
     def __unicode__(self):
         return self.text
 
     def get_url(self):
-        pass    #HERE
+        return '{}#post{}'.format( reverse( 'show_message', args= [ self.thread.identifier ] ), self.position )
+
+    def get_thread_identifier(self):
+        return self.thread.identifier
 
     class Meta:
         ordering = [ '-date_created' ]
