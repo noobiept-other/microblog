@@ -16,10 +16,26 @@
 
 
 <h4>Update account</h4>
+
+{% if form.errors %}
+    <table>
+        {% for field in form %}
+            <tr>
+                <td>{{ field.name }}</td>
+                <td>{{ field.errors }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+
 <form method="post" action="{% url 'accounts:edit' %}" enctype="multipart/form-data">
     {% csrf_token %}
 
     <table>
+        <tr>
+            <td>{{ form.name.label_tag }}</td>
+            <td>{{ form.name }}</td>
+        </tr>
         <tr>
             <td>{{ form.info.label_tag }}</td>
             <td>{{ form.info }}</td>

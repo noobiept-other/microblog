@@ -10,7 +10,7 @@
                 {% endif %}
                 <td class="postText">
                     <div>
-                        <a href="{{ message.user.get_url }}">{{ message.user }}</a> {{ message.date_created|naturaltime }}
+                        <a href="{{ message.user.get_url }}">{{ message.user.name }} ({{ message.user.username }})</a> {{ message.date_created|naturaltime }}
                     </div>
                     <div class="postText-content">
                         {{ message.text|category_links }}

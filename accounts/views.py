@@ -198,9 +198,11 @@ def edit_account( request ):
 
         if form.is_valid():
 
+            name = form.cleaned_data[ 'name' ]
             info = form.cleaned_data[ 'info' ]
             image = request.FILES.get( 'image' )
 
+            request.user.name = name
             request.user.info = info
 
             if image:
@@ -211,7 +213,7 @@ def edit_account( request ):
             return HttpResponseRedirect( request.user.get_url() )
 
     else:
-        form = EditAccountForm( initial= { 'info': request.user.info } )
+        form = EditAccountForm( initial= { 'name': request.user.name, 'info': request.user.info } )
 
     context = {
         'form': form

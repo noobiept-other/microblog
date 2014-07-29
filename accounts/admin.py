@@ -12,6 +12,6 @@ admin.site.register( PrivateMessage, PrivateMessageAdmin )
 
 class AccountAdmin( admin.ModelAdmin ):
 
-    list_display = ( 'username', 'email', 'is_moderator', 'is_staff', 'date_joined' )
+    list_display = ( 'username', 'email', 'name', 'is_moderator', 'is_staff', 'date_joined' )
 
 admin.site.register( Account, AccountAdmin )

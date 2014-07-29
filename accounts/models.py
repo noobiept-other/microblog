@@ -11,8 +11,17 @@ class Account( AbstractUser ):
 
     is_moderator = models.BooleanField( default= False )
     following = models.ManyToManyField( settings.AUTH_USER_MODEL, symmetrical= False )
+    name = models.CharField( max_length= 30 )
     info = models.CharField( max_length= 200, default= '', blank= True )
     image = models.FileField( upload_to= 'accounts/%Y_%m_%d', blank= True )
+
+    def save(self, *args, **kwargs):
+
+            # first time saving the account, init. the name with the same string as in the username (the name can then be changed later on)
+        if self.pk is None:
+            self.name = self.username
+
+        super( Account, self ).save( *args, **kwargs )
 
     def get_url(self):
         return reverse( 'accounts:user_page', args= [ self.username ] )
