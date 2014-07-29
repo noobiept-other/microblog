@@ -62,3 +62,8 @@
     {
     font-weight: bold;
     }
+
+#Menu form
+    {
+    display: inline-block;
+    }

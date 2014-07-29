@@ -179,3 +179,33 @@ def show_message( request, identifier ):
     }
 
     return render( request, 'show_message.html', context )
+
+
+def search( request ):
+
+    if request.method != 'POST':
+        return HttpResponseForbidden( 'Post request only' )
+
+    searchText = request.POST[ 'SearchText' ]
+
+    if not searchText or len( searchText ) < 3:
+        utilities.set_message( request, 'Write a search text with 3 or more 3 characters.' )
+        return HttpResponseRedirect( reverse( 'home' ) )
+
+    userModel = get_user_model()
+
+    people = userModel.objects.filter( username__icontains= searchText )
+    categories = Category.objects.filter( name__icontains= searchText )
+    messages = []
+
+    messages.extend( Thread.objects.filter( text__icontains= searchText ) )
+    messages.extend( Post.objects.filter( text__icontains= searchText ) )
+
+    context = {
+        'search': searchText,
+        'people': people,
+        'categories': categories,
+        'messages': messages
+    }
+
+    return render( request, 'search.html', context )

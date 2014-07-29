@@ -20,6 +20,8 @@ urlpatterns = patterns('',
     url( r'^following$', 'accounts.views.show_following', name= 'show_following' ),
     url( r'^show_images$', 'accounts.views.show_images', name= 'show_images' ),
 
+    url( r'^search$', 'microblog.views.search', name= 'search' ),
+
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<p>Searched for: {{ search }}</p>
+
+<h2>People</h2>
+
+{% if people %}
+    {% for person in people %}
+    <ul>
+        <li><a href="{{ person.get_url }}">{{ person }}</a></li>
+    </ul>
+    {% endfor %}
+{% else %}
+    <p>Nothing found.</p>
+{% endif %}
+
+<h2>Categories</h2>
+
+{% if categories %}
+    {% for category in categories %}
+    <ul>
+        <li><a href="{{ category.get_url }}">{{ category }}</a></li>
+    </ul>
+    {% endfor %}
+{% else %}
+    <p>Nothing found.</p>
+{% endif %}
+
+<h2>Messages</h2>
+
+{% if messages %}
+    {% for message in messages %}
+    <ul>
+        <li><a href="{{ message.get_url }}">{{ message }}</a></li>
+    </ul>
+    {% endfor %}
+{% else %}
+    <p>Nothing found.</p>
+{% endif %}
+
+{% endblock %}

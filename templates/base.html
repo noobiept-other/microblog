@@ -25,6 +25,13 @@
     <a href="{% url 'categories' %}">categories</a>
 
     <a href="{% url 'post' %}">post</a>
+
+    <form method="post" action="{% url 'search' %}">
+        {% csrf_token %}
+
+        <input id="SearchText" name="SearchText" type="text" />
+        <input type="submit" value="search" />
+    </form>
 </div>
 
 {% if message %}

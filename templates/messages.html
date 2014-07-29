@@ -28,4 +28,6 @@
             </tr>
         {% endfor %}
     </table>
+{% else %}
+    <p>No messages yet. Try to follow <a href="{% url 'people' %}">some people.</a></p>
 {% endif %}
