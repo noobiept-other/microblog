@@ -38,6 +38,34 @@ class Account( AbstractUser ):
     def get_message_count(self):
         return self.post_set.count() + self.thread_set.count()
 
+    def get_images_count(self):
+        count = 0
+
+        for thread in self.thread_set.all():
+            if thread.image:
+                count += 1
+
+        for post in self.post_set.all():
+            if post.image:
+                count += 1
+
+        return count
+
+    def get_messages_with_images(self):
+
+        messages = []
+
+        for thread in self.thread_set.all():
+            if thread.image:
+                messages.append( thread )
+
+        for post in self.post_set.all():
+            if post.image:
+                messages.append( post )
+
+        return messages
+
+
     def is_following(self, username):
 
         userModel = get_user_model()

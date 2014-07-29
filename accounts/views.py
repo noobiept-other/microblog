@@ -79,6 +79,17 @@ def show_following( request ):
     return render( request, 'accounts/user_page.html', context )
 
 
+@login_required
+def show_images( request ):
+
+    context = {
+        'pageUser': request.user,
+        'messages': request.user.get_messages_with_images(),
+        'imagesSelected': True
+    }
+
+    return render( request, 'accounts/user_page.html', context )
+
 
 @login_required
 def send_private_message( request, username ):

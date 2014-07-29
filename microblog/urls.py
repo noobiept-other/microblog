@@ -18,6 +18,7 @@ urlpatterns = patterns('',
 
     url( r'^followers$', 'accounts.views.show_followers', name= 'show_followers' ),
     url( r'^following$', 'accounts.views.show_following', name= 'show_following' ),
+    url( r'^show_images$', 'accounts.views.show_images', name= 'show_images' ),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
