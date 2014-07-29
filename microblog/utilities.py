@@ -1,6 +1,23 @@
 import re
 from django.template.defaultfilters import slugify
 
+def sort_by_date( messages, recentFirst= True ):
+
+    def sort_recent_first(a, b):
+        return int( (b.date_created - a.date_created).total_seconds() )
+
+    def sort_recent_last(a, b):
+        return int( (a.date_created - b.date_created).total_seconds() )
+
+    if recentFirst:
+        messages.sort( sort_recent_first )
+
+    else:
+        messages.sort( sort_recent_last )
+
+    return messages
+
+
 
 def get_message( request, context ):
 

@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 
 import re
 
-import microblog.utilities as utilities
+from microblog import utilities
 from microblog.forms import PostForm
 from microblog.models import Thread, Post, Category
 
@@ -119,10 +119,7 @@ def show_category( request, categoryName ):
     messages.extend( category.thread_set.all() )
     messages.extend( category.post_set.all() )
 
-    def sort_by_date(a, b):
-        return int( (b.date_created - a.date_created).total_seconds() )
-
-    messages.sort( sort_by_date )
+    utilities.sort_by_date( messages )
 
     context = {
         'categoryName': categoryName,
@@ -174,6 +171,8 @@ def show_message( request, identifier ):
 
     messages = [ thread ]
     messages.extend( thread.post_set.all() )
+
+    utilities.sort_by_date( messages, False )
 
     context = {
         'messages': messages

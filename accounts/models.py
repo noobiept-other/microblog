@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 
+from microblog import utilities
+
 class Account( AbstractUser ):
 
     is_moderator = models.BooleanField( default= False )
@@ -50,10 +52,7 @@ class Account( AbstractUser ):
         messages.extend( self.thread_set.all()[ :5 ] )
         messages.extend( self.post_set.all()[ :5 ] )
 
-        def sort_by_date(a, b):
-            return int( (b.date_created - a.date_created).total_seconds() )
-
-        messages.sort( sort_by_date )
+        utilities.sort_by_date( messages )
 
         return messages[ :5 ]
 
@@ -71,10 +70,7 @@ class Account( AbstractUser ):
             messages.extend( following.thread_set.all()[ :5 ] )
             messages.extend( following.post_set.all()[ :5 ] )
 
-        def sort_by_date(a, b):
-            return int( (b.date_created - a.date_created).total_seconds() )
-
-        messages.sort( sort_by_date )
+        utilities.sort_by_date( messages )
 
         return messages[ :5 ]
 
