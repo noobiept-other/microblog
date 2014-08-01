@@ -5,7 +5,7 @@ function Tooltip( referenceElement, text )
 var _this = this;
 
 var element = document.createElement( 'div' );
-element.className = 'tooltip';
+element.className = 'Accounts-tooltip';
 element.innerHTML = text;
 
 referenceElement.onmouseover = function()

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load microblog_filters %}
 
 {% block content %}
 
@@ -24,12 +25,12 @@
 
     <table>
         <tr>
-            <td>{{ form.text }}</td>
+            <td>{{ form.text|add_css_class:"form-control" }}</td>
             <td>{{ form.image }}</td>
         </tr>
     </table>
 
-    <input type="submit" value="post" />
+    <input type="submit" value="post" class="btn btn-default" />
     <input type="hidden" name="next" value="{{ next }}" />
 </form>
 

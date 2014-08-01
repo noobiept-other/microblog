@@ -6,7 +6,7 @@
         {% for message in messages %}
             <tr class="post" id="post{{ forloop.counter }}">
                 {% if message.user.image %}
-                    <td><img class="postProfileImage" src="{{ MEDIA_URL }}{{ message.user.image }}" /></td>
+                    <td class="postProfileImage"><img src="{{ MEDIA_URL }}{{ message.user.image }}" /></td>
                 {% endif %}
                 <td class="postText">
                     <div>
@@ -14,9 +14,11 @@
                     </div>
                     <div class="postText-content">
                         {{ message.text|category_links }}
-                        {% if message.image %}
-                            <img src="{{ MEDIA_URL }}{{ message.image }}" />
-                        {% endif %}
+                        <div>
+                            {% if message.image %}
+                                <img src="{{ MEDIA_URL }}{{ message.image }}" />
+                            {% endif %}
+                        </div>
                     </div>
                     <div>
                         <ul class="horizontalList">

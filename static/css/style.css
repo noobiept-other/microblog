@@ -1,3 +1,8 @@
+body
+    {
+    margin: 10px;
+    }
+
 #Message
     {
     background-color: rgba(201, 219, 237, 0.83);
@@ -44,8 +49,19 @@
 
 .postProfileImage
     {
+    vertical-align: top;
+    }
+
+.postProfileImage > img
+    {
     width: 50px;
     height: 50px;
+    }
+
+.profileImage
+    {
+    max-width: 200px;
+    max-height: 200px;
     }
 
 .postUser, .postDate
@@ -67,3 +83,15 @@
     {
     display: inline-block;
     }
+
+#SearchForm
+    {
+    margin-right: 0;
+    }
+
+
+td, th
+    {
+    padding: 10px;
+    }
+

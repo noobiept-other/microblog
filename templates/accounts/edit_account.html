@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+{% load microblog_filters %}
 
 {% block content %}
 
 <h2>{{ user.username }}</h2>
 
 {% if user.image %}
-    <img src="{{ MEDIA_URL }}{{ user.image }}" />
+    <img src="{{ MEDIA_URL }}{{ user.image }}" class="profileImage" />
 {% else %}
     <p>no profile image.</p>
 {% endif %}
@@ -34,11 +35,11 @@
     <table>
         <tr>
             <td>{{ form.name.label_tag }}</td>
-            <td>{{ form.name }}</td>
+            <td>{{ form.name|add_css_class:"form-control" }}</td>
         </tr>
         <tr>
             <td>{{ form.info.label_tag }}</td>
-            <td>{{ form.info }}</td>
+            <td>{{ form.info|add_css_class:"form-control" }}</td>
         </tr>
         <tr>
             <td>{{ form.image.label_tag }}</td>
@@ -46,7 +47,7 @@
         </tr>
     </table>
 
-    <input type="submit" value="update" />
+    <input type="submit" value="update" class="btn btn-default" />
     <input type="hidden" name="next" value="{{ next }}" />
 </form>
 

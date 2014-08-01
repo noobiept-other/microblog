@@ -30,3 +30,9 @@ def category_links( text ):
 def is_following( user, userToCheck ):
 
     return user.is_following( userToCheck )
+
+
+@register.filter
+def add_css_class( formElement, cssClass ):
+
+    return formElement.as_widget( attrs= { 'class': cssClass } )
