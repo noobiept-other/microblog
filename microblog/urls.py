@@ -1,38 +1,45 @@
-from django.conf.urls import patterns, include, url
+"""
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/1.8/topics/http/urls/
+"""
+from django.conf.urls import include, url
 from django.conf import settings
-
 from django.contrib import admin
-admin.autodiscover()
 
-urlpatterns = patterns('',
+import microblog.views
+import accounts.views
+import accounts.urls
 
-    url( r'^$', 'microblog.views.home', name= 'home' ),
 
-    url( r'^post$', 'microblog.views.post_message', name= 'post' ),
-    url( r'^reply/(?P<threadIdentifier>[\w-]+)$', 'microblog.views.post_message', name= 'reply' ),
-    url( r'^follow/(?P<username>\w+)$', 'microblog.views.set_follow', name= 'follow' ),
-    url( r'^category/(?P<categoryName>\w+)$', 'microblog.views.show_category', name= 'show_category' ),
-    url( r'^people$', 'microblog.views.show_people', name= 'people' ),
-    url( r'^categories$', 'microblog.views.show_categories', name= 'categories' ),
-    url( r'^message/(?P<identifier>[\w-]+)$', 'microblog.views.show_message', name= 'show_message' ),
+urlpatterns = [
 
-    url( r'^followers$', 'accounts.views.show_followers', name= 'show_followers' ),
-    url( r'^following$', 'accounts.views.show_following', name= 'show_following' ),
-    url( r'^show_images$', 'accounts.views.show_images', name= 'show_images' ),
+    url( r'^$', microblog.views.home, name= 'home' ),
 
-    url( r'^search$', 'microblog.views.search', name= 'search' ),
+    url( r'^post$', microblog.views.post_message, name= 'post' ),
+    url( r'^reply/(?P<threadIdentifier>[\w-]+)$', microblog.views.post_message, name= 'reply' ),
+    url( r'^follow/(?P<username>\w+)$', microblog.views.set_follow, name= 'follow' ),
+    url( r'^category/(?P<categoryName>\w+)$', microblog.views.show_category, name= 'show_category' ),
+    url( r'^people$', microblog.views.show_people, name= 'people' ),
+    url( r'^categories$', microblog.views.show_categories, name= 'categories' ),
+    url( r'^message/(?P<identifier>[\w-]+)$', microblog.views.show_message, name= 'show_message' ),
 
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    #HERE
+    url( r'^followers$', accounts.views.show_followers, name= 'show_followers' ),
+    url( r'^following$', accounts.views.show_following, name= 'show_following' ),
+    url( r'^show_images$', accounts.views.show_images, name= 'show_images' ),
 
-    url( r'^accounts/', include( 'accounts.urls', namespace= 'accounts', app_name= 'accounts' ) ),
+    url( r'^search$', microblog.views.search, name= 'search' ),
+
+
+    url( r'^accounts/', include( accounts.urls, namespace= 'accounts', app_name= 'accounts' ) ),
 
     url( r'^admin/', include( admin.site.urls ) ),
-)
+]
 
 
 if settings.DEBUG:
         # static files (images, css, javascript, etc.)
-    urlpatterns += patterns( '',
-        ( r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-        'document_root': settings.MEDIA_ROOT } ) )
+    urlpatterns += [
+        url( r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+        'document_root': settings.MEDIA_ROOT } ),
+    ]

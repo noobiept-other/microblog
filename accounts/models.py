@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 
 from microblog import utilities
 
+
 class Account( AbstractUser ):
 
     is_moderator = models.BooleanField( default= False )
@@ -112,17 +113,15 @@ class Account( AbstractUser ):
         return messages[ :5 ]
 
 
-
-
 class PrivateMessage( models.Model ):
 
     receiver = models.ForeignKey( settings.AUTH_USER_MODEL )
     sender = models.ForeignKey( settings.AUTH_USER_MODEL, related_name= 'sender' )
     title = models.TextField( max_length= 100 )
     content = models.TextField( max_length= 500 )
-    date_created = models.DateTimeField( help_text= 'Date Created', default= lambda: timezone.localtime( timezone.now() ) )
+    date_created = models.DateTimeField( help_text= 'Date Created', default= timezone.now )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def get_url(self):

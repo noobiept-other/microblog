@@ -10,6 +10,7 @@ from microblog import utilities
 from microblog.forms import PostForm
 from microblog.models import Thread, Post, Category
 
+
 @login_required
 def home( request ):
 

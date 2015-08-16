@@ -9,6 +9,7 @@ class ThreadAdmin( admin.ModelAdmin ):
 
 admin.site.register( Thread, ThreadAdmin )
 
+
 class PostAdmin( admin.ModelAdmin ):
 
     list_display = ( 'thread', 'user', 'text', 'date_created' )
