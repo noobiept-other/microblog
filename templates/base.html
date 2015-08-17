@@ -1,8 +1,10 @@
 {% load static %}
+{% load accounts %}
 
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8" />
     <title>micro-blog</title>
 
     <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -14,6 +16,8 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
+    <script type="text/javascript" src="{% static 'js/website.js' %}"></script>
+
     {% block scripts %}{% endblock %}
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
@@ -22,7 +26,7 @@
 
 <nav id="Menu" class="navbar navbar-default" role="navigation">
     <ul class="nav navbar-nav">
-        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'home' %}">home</a></li>
 
         {% if user.is_authenticated %}
             <li><a href="{% url 'accounts:user_page' user.username %}">{{ user.username }}</a></li>
@@ -47,8 +51,8 @@
     </form>
 </nav>
 
-{% if message %}
-    <p id="Message">{{ message }}</p>
+{% if MESSAGE %}
+    <p id="Message" title="Click to Remove" onclick="WebSite.removeElement(this);">{{ MESSAGE }}</p>
 {% endif %}
 
 {% block content %}{% endblock %}

@@ -1,16 +1,29 @@
 {% extends "base.html" %}
 {% load humanize %}
 {% load microblog_filters %}
+{% load accounts %}
 
 {% block content %}
 
     <h2>
-        {{ pageUser.name }} ({{ pageUser.username }})
+        {{ pageUser.name }} ({{ pageUser|account_name }})
 
         <ul class="horizontalList">
+            {% if user.is_moderator or user.is_staff %}
+            <li>
+                <a href="{% url 'accounts:disable_confirm' pageUser.username %}">
+                    {% if pageUser.is_active %}
+                        disable
+                    {% else %}
+                        enable
+                    {% endif %}
+                </a>
+            </li>
+            {% endif %}
+
             {% if user.is_staff %}
             <li>
-                <a href="{% url 'accounts:set_moderator' pageUser.username %}">
+                <a href="{% url 'accounts:set_moderator_confirm' pageUser.username %}">
                     {% if pageUser.is_moderator %}
                         un-mod
                     {% else %}
@@ -18,9 +31,13 @@
                     {% endif %}
                 </a>
             </li>
+            <li>
+                <a href="{% url 'accounts:remove_confirm' pageUser.username %}">remove</a>
+            </li>
             {% endif %}
+
             {% if user.is_authenticated %}
-                {% if user.username != pageUser.username %}
+            {% if user.username != pageUser.username %}
                 <li>
                     <a href="{% url 'follow' pageUser.username %}">
                         {% if request.user|is_following:pageUser.username %}
@@ -30,11 +47,9 @@
                         {% endif %}
                     </a>
                 </li>
-                <li><a href="{% url 'accounts:send_message' pageUser.username %}">Send private message</a></li>
             {% else %}
                 <li><a href="{% url 'accounts:edit' %}">edit account</a></li>
-                <li><a href="{% url 'accounts:check_message' %}">See messages</a></li>
-                {% endif %}
+            {% endif %}
             {% endif %}
         </ul>
     </h2>
@@ -46,6 +61,20 @@
     <p>User since: {{ pageUser.date_joined }} ({{ pageUser.date_joined|naturaltime }})</p>
 
     <p>{{ pageUser.info }}</p>
+
+    {% if user.is_authenticated %}
+    <ul>
+    {% if user.username != pageUser.username %}
+        <li><a href="{% url 'accounts:send_message' pageUser.username %}">Send private message.</a></li>
+    {% else %}
+        <li><a href="{% url 'accounts:message_all' %}">See private messages
+            {% if unreadMessages %}
+                (<em>{{ unreadMessages }}</em> unread)
+            {% endif %}
+        </a></li>
+    {% endif %}
+    </ul>
+    {% endif %}
 
 
 <ul class="horizontalList">

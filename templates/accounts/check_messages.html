@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% load humanize %}
+{% load accounts %}
+{% load static %}
+
 
 {% block scripts %}
-    {% load static %}
-
-    <script type="text/javascript" src="{% static 'accounts/check_messages.js' %}"></script>
-    <script type="text/javascript" src="{% static 'accounts/tooltip.js' %}"></script>
-
-    <link rel="stylesheet" href="{% static 'accounts/style.css' %}" />
+    <script type="text/javascript" src="{% static 'js/check_messages.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/tooltip.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/sort_table.js' %}"></script>
 {% endblock %}
+
 
 {% block content %}
 
@@ -16,20 +17,31 @@
 
 {% if messages %}
 
-    <table id="CheckMessagesTable">
-        <tr>
-            <th>from</th>
-            <th>title</th>
-            <th>date</th>
-        </tr>
+    <table id="CheckMessagesTable" class="SortTable">
+        <thead>
+            <tr>
+                <th class="SortTable-sortable">from</th>
+                <th class="SortTable-sortable">title</th>
+                <th class="SortTable-sortable" data-initial-sort="ascending">date</th>
+            </tr>
+        </thead>
+
+        <tbody>
         {% for message in messages %}
-            <tr class="clickableRow contentPreview" data-url="{{ message.get_url }}" data-content="{{ message.content|linebreaksbr|truncatewords:20 }}">
-                <td><a href="{{ message.get_url }}">{{ message.sender }}</a></td>
-                <td>{{ message.title|truncatewords:20 }}</td>
-                <td>{{ message.date_created|naturaltime }}</td>
-                <td><a href="{% url 'accounts:remove_message' message.id %}">X</a></td>
+            <tr class="clickableRow contentPreview" data-url="{{ message.get_url }}" data-content="{{ message.content|linebreaksbr|truncatewords:50 }}">
+                <td data-value="{{ message.sender }}">
+                    {% if not message.has_been_read %}
+                        <span class="red" title="Unread message!">!</span>
+                    {% endif %}
+
+                    {{ message.sender|account_name }}
+                </td>
+                <td data-value="{{ message.title.strip|truncatewords:25 }}">{{ message.title|truncatewords:25 }}</td>
+                <td data-value="{{ message.get_date_created_number }}">{{ message.date_created|naturaltime }}</td>
+                <td><a href="{% url 'accounts:message_remove_confirm' message.id %}" title="Remove Message">X</a></td>
             </tr>
         {% endfor %}
+        </tbody>
     </table>
 
 {% else %}

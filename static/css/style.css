@@ -1,12 +1,33 @@
+    /* Basic Elements */
+
 body
     {
+    font-size: 16px;
     margin: 10px;
     }
 
+em
+    {
+    font-weight: bold;
+    font-style: normal;
+    }
+
+td, th
+    {
+    padding: 10px;
+    }
+
+
+    /* Top Menu */
+
 #Message
     {
+    cursor: pointer;
     background-color: rgba(201, 219, 237, 0.83);
     }
+
+
+    /* Generic Classes */
 
 .horizontalList
     {
@@ -20,6 +41,91 @@ body
     {
     display: inline-block;
     }
+
+.red
+    {
+    color: red;
+    }
+
+.Accounts-disabled
+    {
+    color: gray;
+    text-decoration: underline;
+    }
+
+.Accounts-moderator
+    {
+    color: green;
+    font-weight: bold;
+    text-decoration: underline;
+    }
+
+.Accounts-staff
+    {
+    color: brown;
+    font-weight: bold;
+    text-decoration: underline;
+    }
+
+.clickableRow
+    {
+    cursor: pointer;
+    }
+
+.tooltip
+    {
+    position: absolute;
+    min-width: 100px;
+    background-color: white;
+    border-radius: 3px;
+    box-shadow: 0 0 10px 0;
+    padding: 5px;
+    }
+
+.SortTable-sortable
+    {
+    color: rgb(0, 0, 255);
+    cursor: pointer;
+    }
+
+.SortTable-sortable:hover
+    {
+    text-decoration: underline;
+    }
+
+.entrySelected
+    {
+    font-weight: bold;
+    }
+
+
+    /* Accounts/User Page */
+
+#CheckMessagesTable tr:nth-child(even)
+    {
+    background-color: #e6edeb;
+    }
+
+#CheckMessagesTable td
+    {
+    padding: 5px;
+    min-width: 200px;
+    position: relative;
+    }
+
+#CheckMessagesTable td:last-child
+    {
+    min-width: 10px;
+    }
+
+#PrivateMessage-title
+    {
+    background-color: aliceblue;
+    text-align: center;
+    }
+
+
+    /* Posts */
 
 .post
     {
@@ -74,11 +180,6 @@ body
     margin: auto;
     }
 
-.entrySelected
-    {
-    font-weight: bold;
-    }
-
 #Menu form
     {
     display: inline-block;
@@ -90,8 +191,5 @@ body
     }
 
 
-td, th
-    {
-    padding: 10px;
-    }
+
 

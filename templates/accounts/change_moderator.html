@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load accounts %}
+
+{% block content %}
+
+{% if user_to_change.is_moderator %}
+    <h2>Remove moderator rights from {{ user_to_change|account_name }}?</h2>
+{% else %}
+    <h2>Give moderator rights to {{ user_to_change|account_name }}?</h2>
+{% endif %}
+
+<p>
+    <a href="{% url 'accounts:set_moderator' user_to_change.username %}">Yes</a>
+    <a href="{{ user_to_change.get_url }}">No</a>
+</p>
+
+{% endblock %}

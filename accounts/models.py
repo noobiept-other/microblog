@@ -27,6 +27,15 @@ class Account( AbstractUser ):
     def get_url(self):
         return reverse( 'accounts:user_page', args= [ self.username ] )
 
+    def has_moderator_rights(self):
+        if self.is_staff or self.is_moderator:
+            return True
+
+        return False
+
+    def how_many_unread_messages(self):
+        return self.privatemessage_set.filter( has_been_read= False ).count()
+
     def get_followers(self):
 
         userModel = get_user_model()
@@ -66,7 +75,6 @@ class Account( AbstractUser ):
 
         return messages
 
-
     def is_following(self, username):
 
         userModel = get_user_model()
@@ -80,7 +88,6 @@ class Account( AbstractUser ):
         else:
             return True
 
-
     def get_last_messages(self):
         """
             Returns the last messages (thread/post) by the user
@@ -93,7 +100,6 @@ class Account( AbstractUser ):
         utilities.sort_by_date( messages )
 
         return messages[ :5 ]
-
 
     def get_last_following_messages(self):
         """
@@ -112,6 +118,9 @@ class Account( AbstractUser ):
 
         return messages[ :5 ]
 
+    def __str__(self):
+        return self.username
+
 
 class PrivateMessage( models.Model ):
 
@@ -120,9 +129,22 @@ class PrivateMessage( models.Model ):
     title = models.TextField( max_length= 100 )
     content = models.TextField( max_length= 500 )
     date_created = models.DateTimeField( help_text= 'Date Created', default= timezone.now )
+    has_been_read = models.BooleanField( default= False )
 
     def __str__(self):
         return self.title
 
     def get_url(self):
-        return reverse( 'accounts:open_message', args= [ self.id ] )
+        return reverse( 'accounts:message_open', args= [ self.id ] )
+
+    def get_date_created_number(self):
+        """
+            Time since the date it was created until the current time.
+            Returns a float, useful for comparisons/sorting/etc.
+        """
+        diff = timezone.now() - self.date_created
+
+        return diff.total_seconds()
+
+    class Meta:
+        ordering = [ '-date_created' ]

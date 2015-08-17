@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load accounts %}
+
+{% block content %}
+<h2>Remove user: {{ user_to_remove|account_name }}?</h2>
+
+<p>
+    <a href="{% url 'accounts:remove' user_to_remove.username %}">Yes</a>
+    <a href="{{ user_to_remove.get_url }}">No</a>
+</p>
+{% endblock %}

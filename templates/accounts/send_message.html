@@ -1,15 +1,16 @@
 {% extends "base.html" %}
+{% load accounts %}
 {% load microblog_filters %}
 
 {% block content %}
 
-<h2>Send message to {{ username }}</h2>
+<h2>Send message to {{ receiver|account_name }}</h2>
 
 {% if form.errors %}
     <p>{{ form.errors }}</p>
 {% endif %}
 
-<form method="post" action="{% url 'accounts:send_message' username %}">
+<form method="post" action="{% url 'accounts:message_send' receiver.username %}">
     {% csrf_token %}
 
     <table>

@@ -1,11 +1,9 @@
-(function(window)
-{
 function Tooltip( referenceElement, text )
 {
 var _this = this;
 
 var element = document.createElement( 'div' );
-element.className = 'Accounts-tooltip';
+element.className = 'tooltip';
 element.innerHTML = text;
 
 referenceElement.onmouseover = function()
@@ -20,30 +18,46 @@ referenceElement.onmouseout = function()
 
 referenceElement.onmousemove = function( event )
     {
-    _this.moveTo( event.clientX + 20, event.clientY + 20 );
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
+    var width = element.offsetWidth;
+    var height = element.offsetHeight;
+
+    var nextX = event.clientX + 20;
+    var nextY = event.clientY + 20;
+
+    if ( nextX + width > windowWidth )
+        {
+        nextX = windowWidth - width;
+        }
+
+    if ( nextY + height > windowHeight )
+        {
+        nextY = windowHeight - height;
+        }
+
+    _this.moveTo( nextX, nextY );
     };
 
 
 this.element = element;
 }
 
+
 Tooltip.prototype.show = function()
 {
 document.body.appendChild( this.element );
 };
+
 
 Tooltip.prototype.hide = function()
 {
 document.body.removeChild( this.element );
 };
 
+
 Tooltip.prototype.moveTo = function( x, y )
 {
 this.element.style.left = x + 'px';
 this.element.style.top = y + 'px';
 };
-
-
-window.Tooltip = Tooltip;
-
-}(window));
