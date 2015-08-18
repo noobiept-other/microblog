@@ -11,6 +11,9 @@ urlpatterns = [
     url( r'^logout$', django.contrib.auth.views.logout, name= 'logout' ),
     url( r'^user/(?P<username>\w+)$', accounts.views.user_page, name= 'user_page' ),
     url( r'^edit_account$', accounts.views.edit_account, name= 'edit' ),
+    url( r'^followers$', accounts.views.show_followers, name= 'show_followers' ),
+    url( r'^following$', accounts.views.show_following, name= 'show_following' ),
+    url( r'^show_images$', accounts.views.show_images, name= 'show_images' ),
 
         # Add/Remove Moderator Rights
     url( r'^set_moderator/confirm/(?P<username>\w+)$', accounts.views.set_moderator_confirm, name= 'set_moderator_confirm' ),

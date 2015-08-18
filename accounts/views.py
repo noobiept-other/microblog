@@ -132,8 +132,7 @@ def message_send( request, username ):
 
             title = form.cleaned_data[ 'title' ]
             content = form.cleaned_data[ 'content' ]
-            message = PrivateMessage( receiver= user, sender= request.user, title= title, content= content )
-            message.save()
+            PrivateMessage.objects.create( receiver= user, sender= request.user, title= title, content= content )
 
             utilities.set_message( request, 'Message sent to {}!'.format( user ) )
 
@@ -297,7 +296,7 @@ def edit_account( request ):
             if image:
                 request.user.image = image
 
-            request.user.save()
+            request.user.save( update_fields= [ 'name', 'info', 'image' ] )
 
             return HttpResponseRedirect( request.user.get_url() )
 

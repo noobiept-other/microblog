@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib import admin
 
 import microblog.views
-import accounts.views
 import accounts.urls
 
 
@@ -22,17 +21,9 @@ urlpatterns = [
     url( r'^people$', microblog.views.show_people, name= 'people' ),
     url( r'^categories$', microblog.views.show_categories, name= 'categories' ),
     url( r'^message/(?P<identifier>[\w-]+)$', microblog.views.show_message, name= 'show_message' ),
-
-    #HERE
-    url( r'^followers$', accounts.views.show_followers, name= 'show_followers' ),
-    url( r'^following$', accounts.views.show_following, name= 'show_following' ),
-    url( r'^show_images$', accounts.views.show_images, name= 'show_images' ),
-
     url( r'^search$', microblog.views.search, name= 'search' ),
 
-
     url( r'^accounts/', include( accounts.urls, namespace= 'accounts', app_name= 'accounts' ) ),
-
     url( r'^admin/', include( admin.site.urls ) ),
 ]
 

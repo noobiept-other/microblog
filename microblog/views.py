@@ -43,12 +43,10 @@ def post_message( request, threadIdentifier= None ):
                 except Thread.DoesNotExist:
                     raise Http404( "Invalid thread identifier." )
 
-                message = Post( user= request.user, text= text, image= image, thread= thread, position= thread.post_set.count() + 2 )   # the +2 is because the position starts at 1 rather than 0, and the thread itself is considered the position 1 (so posts start at 2+)
-                message.save()
+                message = Post.objects.create( user= request.user, text= text, image= image, thread= thread, position= thread.post_set.count() + 2 )   # the +2 is because the position starts at 1 rather than 0, and the thread itself is considered the position 1 (so posts start at 2+)
 
             else:
-                message = Thread( user= request.user, text= text, image= image )
-                message.save()
+                message = Thread.objects.create( user= request.user, text= text, image= image )
 
             for category in categories:
 
@@ -56,8 +54,7 @@ def post_message( request, threadIdentifier= None ):
                     categoryElement = Category.objects.get( name= category )
 
                 except Category.DoesNotExist:
-                    categoryElement = Category( name= category )
-                    categoryElement.save()
+                    categoryElement = Category.objects.create( name= category )
 
                 message.categories.add( categoryElement )
 

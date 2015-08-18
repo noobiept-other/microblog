@@ -82,13 +82,13 @@
         <a href="{{ pageUser.get_url }}">messages: {{ pageUser.get_message_count }}</a>
     </li>
     <li {% if imagesSelected %}class="entrySelected"{% endif %}>
-        <a href="{% url 'show_images' %}">images: {{ pageUser.get_images_count }}</a>
+        <a href="{% url 'accounts:show_images' %}">images: {{ pageUser.get_images_count }}</a>
     </li>
     <li {% if followersSelected %}class="entrySelected"{% endif %}>
-        <a href="{% url 'show_followers' %}">Followers: {{ pageUser.get_followers.count }}</a>
+        <a href="{% url 'accounts:show_followers' %}">Followers: {{ pageUser.get_followers.count }}</a>
     </li>
     <li {% if followingSelected %}class="entrySelected"{% endif %}>
-        <a href="{% url 'show_following' %}">Following: {{ pageUser.get_following.count }}</a>
+        <a href="{% url 'accounts:show_following' %}">Following: {{ pageUser.get_following.count }}</a>
     </li>
 </ul>
 
