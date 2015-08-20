@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load microblog_filters %}
 
 {% block content %}
 
@@ -21,23 +22,23 @@
         <table>
             <tr>
                 <td>{{ form.username.label_tag }}</td>
-                <td>{{ form.username }}</td>
+                <td>{{ form.username|add_css_class:"form-control" }}</td>
             </tr>
             <tr>
                 <td>{{ form.email.label_tag }}</td>
-                <td>{{ form.email }}</td>
+                <td>{{ form.email|add_css_class:"form-control" }}</td>
             </tr>
             <tr>
                 <td>{{ form.password1.label_tag }}</td>
-                <td>{{ form.password1 }}</td>
+                <td>{{ form.password1|add_css_class:"form-control" }}</td>
             </tr>
             <tr>
                 <td>{{ form.password2.label_tag }}</td>
-                <td>{{ form.password2 }}</td>
+                <td>{{ form.password2|add_css_class:"form-control" }}</td>
             </tr>
         </table>
 
-        <input type="submit" value="create" />
+        <input type="submit" value="create" class="btn btn-default" />
         <input type="hidden" name="next" value="{{ next }}" />
     </form>
 

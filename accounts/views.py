@@ -72,13 +72,19 @@ def user_page( request, username ):
 
 
 @login_required
-def show_followers( request ):
+def show_followers( request, username ):
 
-    followers = request.user.get_followers()
+    userModel = get_user_model()
+
+    try:
+        user = userModel.objects.get( username= username )
+
+    except userModel.DoesNotExist:
+        raise Http404( "User doesn't exist." )
 
     context = {
-        'pageUser': request.user,
-        'users': followers,
+        'pageUser': user,
+        'users': user.get_followers(),
         'followersSelected': True
     }
 
@@ -86,13 +92,19 @@ def show_followers( request ):
 
 
 @login_required
-def show_following( request ):
+def show_following( request, username ):
 
-    following = request.user.get_following()
+    userModel = get_user_model()
+
+    try:
+        user = userModel.objects.get( username= username )
+
+    except userModel.DoesNotExist:
+        raise Http404( "User doesn't exist." )
 
     context = {
-        'pageUser': request.user,
-        'users': following,
+        'pageUser': user,
+        'users': user.get_following(),
         'followingSelected': True
     }
 
@@ -100,11 +112,19 @@ def show_following( request ):
 
 
 @login_required
-def show_images( request ):
+def show_images( request, username ):
+
+    userModel = get_user_model()
+
+    try:
+        user = userModel.objects.get( username= username )
+
+    except userModel.DoesNotExist:
+        raise Http404( "User doesn't exist." )
 
     context = {
-        'pageUser': request.user,
-        'messages': request.user.get_messages_with_images(),
+        'pageUser': user,
+        'messages': user.get_messages_with_images(),
         'imagesSelected': True
     }
 

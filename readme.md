@@ -1,3 +1,6 @@
+A social media site where users can exchange short posts, images, etc.
+
+
 Libraries
 =========
 

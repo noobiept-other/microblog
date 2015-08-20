@@ -1,0 +1,32 @@
+{% load microblog_filters %}
+
+{% if users %}
+    <table>
+        {% for user in users %}
+        <tr>
+            <td class="postProfileImage">
+            {% if user.image %}
+                <img src="{{ MEDIA_URL }}{{ user.image }}" />
+            {% endif %}
+            </td>
+            <td><a href="{{ user.get_url }}">{{ user.username }}</a></td>
+            <td>{{ user.info }}</td>
+            <td>
+                {% if request.user == user %}
+                    ---
+                {% else %}
+                    <a href="{% url 'follow' user.username %}">
+                        {% if request.user|is_following:user.username %}
+                            un-follow
+                        {% else %}
+                            follow
+                        {% endif %}
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Didn't find anyone.</p>
+{% endif %}
