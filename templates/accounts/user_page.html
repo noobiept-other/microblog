@@ -39,7 +39,7 @@
             {% if user.is_authenticated %}
             {% if user.username != pageUser.username %}
                 <li>
-                    <a href="{% url 'follow' pageUser.username %}">
+                    <a href="{% url 'follow' pageUser.username %}?next={{ request.get_full_path|urlencode }}">
                         {% if request.user|is_following:pageUser.username %}
                             un-follow
                         {% else %}

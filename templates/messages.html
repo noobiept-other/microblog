@@ -5,9 +5,11 @@
     <table id="PostTable">
         {% for message in messages %}
             <tr class="post" id="post{{ forloop.counter }}">
+                <td class="postProfileImage">
                 {% if message.user.image %}
-                    <td class="postProfileImage"><img src="{{ MEDIA_URL }}{{ message.user.image }}" /></td>
+                    <img src="{{ MEDIA_URL }}{{ message.user.image }}" />
                 {% endif %}
+                </td>
                 <td class="postText">
                     <div>
                         <a href="{{ message.user.get_url }}">{{ message.user.name }} ({{ message.user.username }})</a> {{ message.date_created|naturaltime }}
