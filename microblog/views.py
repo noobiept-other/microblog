@@ -100,7 +100,13 @@ def set_follow( request, username ):
 
         utilities.set_message( request, '{} un-followed'.format( userToFollow ) )
 
-    return HttpResponseRedirect( reverse( 'home' ) )
+    nextUrl = request.GET.get( 'next' )
+
+    if nextUrl:
+        return HttpResponseRedirect( nextUrl )
+
+    else:
+        return HttpResponseRedirect( reverse( 'home' ) )
 
 
 @login_required
@@ -144,6 +150,7 @@ def show_people( request ):
     context = {
         'users': userModel.objects.exclude( username__in= following )
     }
+    utilities.get_message( request, context )
 
     return render( request, 'people.html', context )
 

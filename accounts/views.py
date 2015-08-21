@@ -87,6 +87,7 @@ def show_followers( request, username ):
         'users': user.get_followers(),
         'followersSelected': True
     }
+    utilities.get_message( request, context )
 
     return render( request, 'accounts/user_page.html', context )
 
@@ -107,6 +108,7 @@ def show_following( request, username ):
         'users': user.get_following(),
         'followingSelected': True
     }
+    utilities.get_message( request, context )
 
     return render( request, 'accounts/user_page.html', context )
 
@@ -127,6 +129,7 @@ def show_images( request, username ):
         'messages': user.get_messages_with_images(),
         'imagesSelected': True
     }
+    utilities.get_message( request, context )
 
     return render( request, 'accounts/user_page.html', context )
 

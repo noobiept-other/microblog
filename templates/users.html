@@ -15,7 +15,7 @@
                 {% if request.user == user %}
                     ---
                 {% else %}
-                    <a href="{% url 'follow' user.username %}">
+                    <a href="{% url 'follow' user.username %}?next={{ request.get_full_path|urlencode }}">
                         {% if request.user|is_following:user.username %}
                             un-follow
                         {% else %}
