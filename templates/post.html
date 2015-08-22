@@ -16,8 +16,8 @@
     </table>
 {% endif %}
 
-{% if threadIdentifier %}
-<form method="post" action="{% url 'reply' threadIdentifier %}" enctype="multipart/form-data">
+{% if postIdentifier %}
+<form method="post" action="{% url 'reply' postIdentifier %}" enctype="multipart/form-data">
 {% else %}
 <form method="post" action="{% url 'post' %}" enctype="multipart/form-data">
 {% endif %}
@@ -33,7 +33,6 @@
     <input type="submit" value="post" class="btn btn-default" />
     <input type="hidden" name="next" value="{{ next }}" />
 </form>
-
 
 
 {% endblock %}

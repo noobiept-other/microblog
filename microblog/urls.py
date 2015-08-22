@@ -15,7 +15,7 @@ urlpatterns = [
     url( r'^$', microblog.views.home, name= 'home' ),
 
     url( r'^post$', microblog.views.post_message, name= 'post' ),
-    url( r'^reply/(?P<threadIdentifier>[\w-]+)$', microblog.views.post_message, name= 'reply' ),
+    url( r'^reply/(?P<postIdentifier>[\w-]+)$', microblog.views.post_message, name= 'reply' ),
     url( r'^follow/(?P<username>\w+)$', microblog.views.set_follow, name= 'follow' ),
     url( r'^category/(?P<categoryName>\w+)$', microblog.views.show_category, name= 'show_category' ),
     url( r'^people$', microblog.views.show_people, name= 'people' ),

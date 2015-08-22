@@ -37,7 +37,6 @@ class Account( AbstractUser ):
         return self.privatemessage_set.filter( has_been_read= False ).count()
 
     def get_followers(self):
-
         userModel = get_user_model()
 
         return userModel.objects.filter( following__username= self.username )
@@ -46,16 +45,12 @@ class Account( AbstractUser ):
         return self.following.all()
 
     def get_message_count(self):
-        return self.post_set.count() + self.thread_set.count()
+        return self.posts.count()
 
     def get_images_count(self):
         count = 0
 
-        for thread in self.thread_set.all():
-            if thread.image:
-                count += 1
-
-        for post in self.post_set.all():
+        for post in self.posts.all():
             if post.image:
                 count += 1
 
@@ -65,18 +60,13 @@ class Account( AbstractUser ):
 
         messages = []
 
-        for thread in self.thread_set.all():
-            if thread.image:
-                messages.append( thread )
-
-        for post in self.post_set.all():
+        for post in self.posts.all():
             if post.image:
                 messages.append( post )
 
         return messages
 
     def is_following(self, username):
-
         userModel = get_user_model()
 
         try:
@@ -90,29 +80,22 @@ class Account( AbstractUser ):
 
     def get_last_messages(self):
         """
-            Returns the last messages (thread/post) by the user
+            Returns the last messages by the user.
         """
-
-        messages = []
-        messages.extend( self.thread_set.all()[ :5 ] )
-        messages.extend( self.post_set.all()[ :5 ] )
-
-        utilities.sort_by_date( messages )
+        messages = self.posts.all().order_by( '-date_created' )
 
         return messages[ :5 ]
 
     def get_last_following_messages(self):
         """
-            Returns the last messages (thread/post) written by users we're following
+            Returns the last messages written by users we're following.
         """
-
         followingUsers = self.following.all()
         messages = []
 
             # get last 5 posts of each
         for following in followingUsers:
-            messages.extend( following.thread_set.all()[ :5 ] )
-            messages.extend( following.post_set.all()[ :5 ] )
+            messages.extend( following.posts.all()[ :5 ] )
 
         utilities.sort_by_date( messages )
 

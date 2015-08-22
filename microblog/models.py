@@ -17,47 +17,21 @@ class Category( models.Model ):
         return reverse( 'show_category', args= [ self.name ] )
 
 
-class Thread( models.Model ):
+class Post( models.Model ):
 
-    user = models.ForeignKey( settings.AUTH_USER_MODEL )
+    user = models.ForeignKey( settings.AUTH_USER_MODEL, related_name= 'posts' )
     text = models.TextField( max_length= 200 )
     image = models.FileField( upload_to= 'images/%Y_%m_%d', blank= True )
     date_created = models.DateTimeField( default= timezone.now )
     categories = models.ManyToManyField( Category )
-    identifier = models.CharField( max_length= 40, unique= True, default= uuid.uuid4 )
+    reply_to = models.ForeignKey( 'self', related_name= 'replies', blank= True, null= True )
+    identifier = models.UUIDField( unique= True, default= uuid.uuid4 )
 
     def __str__(self):
         return self.text
 
     def get_url(self):
         return reverse( 'show_message', args= [ self.identifier ] )
-
-    def get_thread_identifier(self):
-        return self.identifier
-
-    class Meta:
-        ordering = [ '-date_created' ]
-
-
-class Post( models.Model ):
-
-    user = models.ForeignKey( settings.AUTH_USER_MODEL )
-    text = models.TextField( max_length= 200 )
-    image = models.FileField( upload_to= 'images/%Y_%m_%d', blank= True )
-    date_created = models.DateTimeField( default= timezone.now )
-    categories = models.ManyToManyField( Category )
-    thread = models.ForeignKey( Thread )
-    position = models.IntegerField()
-    identifier = models.CharField( max_length= 40, unique= True, default= uuid.uuid4 )
-
-    def __str__(self):
-        return self.text
-
-    def get_url(self):
-        return '{}#post{}'.format( reverse( 'show_message', args= [ self.thread.identifier ] ), self.position )
-
-    def get_thread_identifier(self):
-        return self.thread.identifier
 
     class Meta:
         ordering = [ '-date_created' ]

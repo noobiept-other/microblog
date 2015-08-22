@@ -8,7 +8,7 @@ import re
 
 from microblog import utilities
 from microblog.forms import PostForm
-from microblog.models import Thread, Post, Category
+from microblog.models import Post, Category
 
 
 @login_required
@@ -24,8 +24,11 @@ def home( request ):
 
 
 @login_required
-def post_message( request, threadIdentifier= None ):
-
+def post_message( request, postIdentifier= None ):
+    """
+        Add a new post.
+        It can be an independent post, or a reply to another post (known by the 'postIdentifier' argument).
+    """
     if request.method == 'POST':
 
         form = PostForm( request.POST, request.FILES )
@@ -36,17 +39,18 @@ def post_message( request, threadIdentifier= None ):
             categories = re.findall( r'#(\w+)', text )
             image = request.FILES.get( 'image' )
 
-            if threadIdentifier:
+            if postIdentifier:
                 try:
-                    thread = Thread.objects.get( identifier= threadIdentifier )
+                    parent = Post.objects.get( identifier= postIdentifier )
 
-                except Thread.DoesNotExist:
-                    raise Http404( "Invalid thread identifier." )
+                except Post.DoesNotExist:
+                    raise Http404( "Invalid post identifier." )
 
-                message = Post.objects.create( user= request.user, text= text, image= image, thread= thread, position= thread.post_set.count() + 2 )   # the +2 is because the position starts at 1 rather than 0, and the thread itself is considered the position 1 (so posts start at 2+)
+                message = Post.objects.create( user= request.user, text= text, image= image, reply_to= parent )
 
             else:
-                message = Thread.objects.create( user= request.user, text= text, image= image )
+                message = Post.objects.create( user= request.user, text= text, image= image )
+
 
             for category in categories:
 
@@ -65,7 +69,7 @@ def post_message( request, threadIdentifier= None ):
 
     context = {
         'form': form,
-        'threadIdentifier': threadIdentifier
+        'postIdentifier': postIdentifier
     }
 
     return render( request, 'post.html', context )
@@ -118,12 +122,7 @@ def show_category( request, categoryName ):
     except Category.DoesNotExist:
         raise Http404( "Category doesn't exist." )
 
-    messages = []
-
-    messages.extend( category.thread_set.all() )
-    messages.extend( category.post_set.all() )
-
-    utilities.sort_by_date( messages )
+    messages = category.post_set.all().order_by( '-date_created' )
 
     context = {
         'categoryName': categoryName,
@@ -169,13 +168,13 @@ def show_categories( request ):
 def show_message( request, identifier ):
 
     try:
-        thread = Thread.objects.get( identifier= identifier )
+        post = Post.objects.get( identifier= identifier )
 
-    except Thread.DoesNotExist:
+    except Post.DoesNotExist:
         raise Http404( "Invalid identifier." )
 
-    messages = [ thread ]
-    messages.extend( thread.post_set.all() )
+    messages = [ post ]
+    messages.extend( post.replies.all() )
 
     utilities.sort_by_date( messages, False )
 

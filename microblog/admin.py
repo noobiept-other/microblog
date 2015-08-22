@@ -1,18 +1,11 @@
 from django.contrib import admin
 
-from microblog.models import Thread, Post, Category
-
-
-class ThreadAdmin( admin.ModelAdmin ):
-
-    list_display = ( 'user', 'text', 'date_created' )
-
-admin.site.register( Thread, ThreadAdmin )
+from microblog.models import Post, Category
 
 
 class PostAdmin( admin.ModelAdmin ):
 
-    list_display = ( 'thread', 'user', 'text', 'date_created' )
+    list_display = ( 'user', 'text', 'date_created' )
 
 admin.site.register( Post, PostAdmin )
 
