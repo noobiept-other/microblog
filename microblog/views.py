@@ -29,6 +29,18 @@ def post_message( request, postIdentifier= None ):
         Add a new post.
         It can be an independent post, or a reply to another post (known by the 'postIdentifier' argument).
     """
+        # check if this is a reply to another post or not, by trying to obtain the parent post object
+    if postIdentifier:
+        try:
+            parent = Post.objects.get( identifier= postIdentifier )
+
+        except Post.DoesNotExist:
+            parent = None
+
+    else:
+        parent = None
+
+
     if request.method == 'POST':
 
         form = PostForm( request.POST, request.FILES )
@@ -40,11 +52,8 @@ def post_message( request, postIdentifier= None ):
             image = request.FILES.get( 'image' )
 
             if postIdentifier:
-                try:
-                    parent = Post.objects.get( identifier= postIdentifier )
-
-                except Post.DoesNotExist:
-                    raise Http404( "Invalid post identifier." )
+                if not parent:
+                    raise Http404( "Invalid parent post identifier." )
 
                 message = Post.objects.create( user= request.user, text= text, image= image, reply_to= parent )
 
@@ -67,9 +76,11 @@ def post_message( request, postIdentifier= None ):
     else:
         form = PostForm()
 
+
     context = {
         'form': form,
-        'postIdentifier': postIdentifier
+        'parentPost': parent,
+        'messages': [ parent ],
     }
 
     return render( request, 'post.html', context )
@@ -173,8 +184,20 @@ def show_message( request, identifier ):
     except Post.DoesNotExist:
         raise Http404( "Invalid identifier." )
 
-    messages = [ post ]
-    messages.extend( post.replies.all() )
+    messages = []
+
+    if post.reply_to:
+        messages.append( post.reply_to )
+
+        for reply in post.reply_to.replies.all():
+            messages.append( reply )
+
+            if reply == post:
+                messages.extend( post.replies.all() )
+
+    else:
+        messages.append( post )
+        messages.extend( post.replies.all() )
 
     utilities.sort_by_date( messages, False )
 

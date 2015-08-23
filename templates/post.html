@@ -3,7 +3,16 @@
 
 {% block content %}
 
-<h1>Post</h1>
+
+
+
+{% if parentPost %}
+    <h1>Replying to</h1>
+    {% include "messages.html" %}
+{% else %}
+    <h1>Post</h1>
+{% endif %}
+
 
 {% if form.errors %}
     <table>
@@ -16,8 +25,8 @@
     </table>
 {% endif %}
 
-{% if postIdentifier %}
-<form method="post" action="{% url 'reply' postIdentifier %}" enctype="multipart/form-data">
+{% if parentPost %}
+<form method="post" action="{% url 'reply' parentPost.identifier %}" enctype="multipart/form-data">
 {% else %}
 <form method="post" action="{% url 'post' %}" enctype="multipart/form-data">
 {% endif %}

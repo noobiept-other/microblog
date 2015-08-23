@@ -25,7 +25,12 @@
                     <div>
                         <ul class="horizontalList">
                             <li><a href="{% url 'reply' message.identifier %}">reply</a></li>
-                            <li><a href="{{ message.get_url }}">open</a></li>
+                            <li>
+                                <a href="{{ message.get_url }}">open</a>
+                                {% if message.replies %}
+                                    ({{ message.replies.count }})
+                                {% endif %}
+                            </li>
                         </ul>
                     </div>
                 </td>
