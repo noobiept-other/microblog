@@ -180,6 +180,16 @@ td, th
     margin: auto;
     }
 
+#PostText
+    {
+    width: 100%;
+    }
+
+#PostImage
+    {
+    display: inline-block;
+    }
+
 #Menu form
     {
     display: inline-block;

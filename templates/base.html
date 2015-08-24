@@ -38,8 +38,7 @@
         <li><a href="{% url 'people' %}">find people</a></li>
         <li><a href="{% url 'categories' %}">categories</a></li>
 
-        <li><a href="{% url 'post' %}">post</a></li>
-
+        <li><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#PostDialog">post</button></li>
     </ul>
 
 
@@ -54,6 +53,23 @@
 {% if MESSAGE %}
     <p id="Message" title="Click to Remove" onclick="WebSite.removeElement(this);">{{ MESSAGE }}</p>
 {% endif %}
+
+<div id="PostDialog" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <textarea id="PostText" maxlength="{{ post_max_length }}"></textarea>
+            </div>
+            <div class="modal-footer">
+                <input id="PostImage" type="file" />
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="WebSite.addPost(event);">Post</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 {% block content %}{% endblock %}
 

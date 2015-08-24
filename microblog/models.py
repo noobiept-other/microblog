@@ -6,6 +6,9 @@ from django.core.urlresolvers import reverse
 import uuid
 
 
+POST_MAX_LENGTH = 200
+
+
 class Category( models.Model ):
 
     name = models.SlugField( max_length= 100 )
@@ -20,7 +23,7 @@ class Category( models.Model ):
 class Post( models.Model ):
 
     user = models.ForeignKey( settings.AUTH_USER_MODEL, related_name= 'posts' )
-    text = models.TextField( max_length= 200 )
+    text = models.TextField( max_length= POST_MAX_LENGTH )
     image = models.FileField( upload_to= 'images/%Y_%m_%d', blank= True )
     date_created = models.DateTimeField( default= timezone.now )
     categories = models.ManyToManyField( Category )

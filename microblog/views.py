@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import Http404, HttpResponseRedirect, HttpResponseForbidden
+from django.http import Http404, HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed, JsonResponse, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
@@ -24,12 +24,22 @@ def home( request ):
 
 
 @login_required
-def post_message( request, postIdentifier= None ):
+def post_message( request ):
     """
         Add a new post.
         It can be an independent post, or a reply to another post (known by the 'postIdentifier' argument).
+
+        Requires a POST request with the following arguments:
+            - text
+            - image (optional)
+            - postIdentifier (optional)
     """
         # check if this is a reply to another post or not, by trying to obtain the parent post object
+    if not request.method == 'POST':
+        return HttpResponseNotAllowed( [ 'POST' ] )
+
+    postIdentifier = request.POST.get( 'postIdentifier' )
+
     if postIdentifier:
         try:
             parent = Post.objects.get( identifier= postIdentifier )
@@ -41,49 +51,33 @@ def post_message( request, postIdentifier= None ):
         parent = None
 
 
-    if request.method == 'POST':
+    text = request.POST.get( 'text' )
 
-        form = PostForm( request.POST, request.FILES )
+    if not text:
+        return HttpResponseBadRequest( "Need a 'text' argument." )
 
-        if form.is_valid():
+    categories = re.findall( r'#(\w+)', text )
+    image = request.FILES.get( 'image' )
 
-            text = form.cleaned_data[ 'text' ]
-            categories = re.findall( r'#(\w+)', text )
-            image = request.FILES.get( 'image' )
-
-            if postIdentifier:
-                if not parent:
-                    raise Http404( "Invalid parent post identifier." )
-
-                message = Post.objects.create( user= request.user, text= text, image= image, reply_to= parent )
-
-            else:
-                message = Post.objects.create( user= request.user, text= text, image= image )
-
-
-            for category in categories:
-
-                try:
-                    categoryElement = Category.objects.get( name= category )
-
-                except Category.DoesNotExist:
-                    categoryElement = Category.objects.create( name= category )
-
-                message.categories.add( categoryElement )
-
-            return HttpResponseRedirect( message.get_url() )
+    if parent:
+        message = Post.objects.create( user= request.user, text= text, image= image, reply_to= parent )
 
     else:
-        form = PostForm()
+        message = Post.objects.create( user= request.user, text= text, image= image )
 
 
-    context = {
-        'form': form,
-        'parentPost': parent,
-        'messages': [ parent ],
-    }
+    for category in categories:
 
-    return render( request, 'post.html', context )
+        try:
+            categoryElement = Category.objects.get( name= category )
+
+        except Category.DoesNotExist:
+            categoryElement = Category.objects.create( name= category )
+
+        message.categories.add( categoryElement )
+
+
+    return JsonResponse({ 'url': message.get_url() })
 
 
 @login_required
@@ -225,7 +219,7 @@ def search( request ):
     categories = Category.objects.filter( name__icontains= searchText )
     messages = []
 
-    messages.extend( Thread.objects.filter( text__icontains= searchText ) )
+    messages.extend( Thread.objects.filter( text__icontains= searchText ) ) #HERE
     messages.extend( Post.objects.filter( text__icontains= searchText ) )
 
     context = {
