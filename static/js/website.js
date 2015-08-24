@@ -2,12 +2,38 @@ var WebSite;
 (function(WebSite) {
 
 
+var POST_IDENTIFIER = null;
+
+
+window.addEventListener( 'load', function()
+{
+$( '#PostDialog' ).on( 'hide.bs.modal', function( event )
+    {
+    POST_IDENTIFIER = null;
+    })
+});
+
+
 /**
  * Removes an html element.
  */
 WebSite.removeElement = function( element )
 {
 element.parentNode.removeChild( element );
+};
+
+
+/**
+ * @param postIdentifier (optional) Identifier of the post we're replying too. If not provided then its a new independent post.
+ */
+WebSite.openPostDialog = function( postIdentifier )
+{
+if ( typeof postIdentifier !== 'undefined' )
+    {
+    POST_IDENTIFIER = postIdentifier;
+    }
+
+$( '#PostDialog' ).modal( 'show' );
 };
 
 
@@ -39,6 +65,11 @@ if ( image.files.length > 0 )
     data.append( 'image', image.files[ 0 ] );
     }
 
+if ( POST_IDENTIFIER !== null )
+    {
+    data.append( 'postIdentifier', POST_IDENTIFIER );
+    }
+
 
 button.innerHTML = 'Posting..';
 
@@ -59,7 +90,6 @@ $.ajax({
             button.innerHTML = 'Post';
             }
     });
-
 };
 
 

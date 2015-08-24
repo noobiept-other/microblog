@@ -180,6 +180,11 @@ td, th
     margin: auto;
     }
 
+#PostButton
+    {
+    margin: 2px;
+    }
+
 #PostText
     {
     width: 100%;

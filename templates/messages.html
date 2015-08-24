@@ -24,7 +24,7 @@
                     </div>
                     <div>
                         <ul class="horizontalList">
-{#    #HERE                        <li><a href="{% url 'reply' message.identifier %}">reply</a></li>#}
+                            <li><a href="#" onclick="WebSite.openPostDialog('{{ message.identifier }}');">reply</a></li>
                             <li>
                                 <a href="{{ message.get_url }}">open</a>
                                 {% if message.replies %}
