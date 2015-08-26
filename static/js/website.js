@@ -3,6 +3,7 @@ var WebSite;
 
 
 var POST_IDENTIFIER = null;
+var MESSAGE_CONTAINER = null;
 
 
 window.addEventListener( 'load', function()
@@ -10,7 +11,9 @@ window.addEventListener( 'load', function()
 $( '#PostDialog' ).on( 'hide.bs.modal', function( event )
     {
     POST_IDENTIFIER = null;
-    })
+    });
+
+MESSAGE_CONTAINER = document.getElementById( 'MessageContainer' );
 });
 
 
@@ -86,10 +89,45 @@ $.ajax({
         error: function( jqXHR, textStatus, errorThrown )
             {
             console.log( textStatus, errorThrown );
+            WebSite.addErrorMessage( 'Failed to send the message.' );
+
             $( '#PostDialog' ).modal( 'hide' );
             button.innerHTML = 'Post';
             }
     });
+};
+
+
+/**
+ * Show a message below the menu.
+ */
+WebSite.addMessage = function( text )
+{
+var message = document.createElement( 'p' );
+
+message.className = 'Message';
+message.title = 'Click to Remove'
+message.addEventListener( 'click', function( event )
+    {
+    WebSite.removeElement( this );
+    });
+message.innerHTML = text;
+
+MESSAGE_CONTAINER.appendChild( message );
+
+return message;
+};
+
+
+/**
+ * Show an error message below the menu.
+ */
+WebSite.addErrorMessage = function( text )
+{
+var message = WebSite.addMessage( text );
+message.classList.add( 'Message-error' );
+
+return message;
 };
 
 
