@@ -137,9 +137,14 @@ td, th
     height: 100px;
     }
 
-.post:nth-child(even)
+#SelectedPost
     {
     background-color: rgba(74, 154, 157, 0.09);
+    }
+
+.replyPost
+    {
+    background-color: rgba(240, 248, 255, 0.2);
     }
 
 .postText
@@ -183,6 +188,16 @@ td, th
 #PostTable
     {
     margin: auto;
+    }
+
+#PostTable tr
+    {
+    border-bottom: 2px solid black;
+    }
+
+#PostTable tr:last-child
+    {
+    border-bottom: none;
     }
 
 #PostButton

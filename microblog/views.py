@@ -179,24 +179,26 @@ def show_message( request, identifier ):
         raise Http404( "Invalid identifier." )
 
     messages = []
+    replies = []
+    parent = post.reply_to
 
-    if post.reply_to:
-        messages.append( post.reply_to )
+    if parent:
+        messages.append( parent )
 
-        for reply in post.reply_to.replies.all():
+        for reply in parent.replies.all().order_by( 'date_created' ):
             messages.append( reply )
 
             if reply == post:
-                messages.extend( post.replies.all() )
+                replies.extend( post.replies.all().order_by( 'date_created' ) )
 
     else:
         messages.append( post )
-        messages.extend( post.replies.all() )
-
-    utilities.sort_by_date( messages, False )
+        replies.extend( post.replies.all().order_by( 'date_created' ) )
 
     context = {
-        'messages': messages
+        'messages': messages,
+        'replies': replies,
+        'selected_message': post,
     }
 
     return render( request, 'show_message.html', context )

@@ -34,7 +34,7 @@ class Post( models.Model ):
         return self.text
 
     def get_url(self):
-        return reverse( 'show_message', args= [ self.identifier ] )
+        return '{}#SelectedPost'.format( reverse( 'show_message', args= [ self.identifier ] ) )
 
     class Meta:
         ordering = [ '-date_created' ]
