@@ -38,7 +38,9 @@
         <li><a href="{% url 'people' %}">find people</a></li>
         <li><a href="{% url 'categories' %}">categories</a></li>
 
-        <li><button id="PostButton" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#PostDialog">post</button></li>
+        {% if user.is_authenticated %}
+            <li><button id="PostButton" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#PostDialog">post</button></li>
+        {% endif %}
     </ul>
 
 

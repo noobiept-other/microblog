@@ -5,8 +5,6 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 
-from microblog import utilities
-
 
 class Account( AbstractUser ):
 
@@ -77,29 +75,6 @@ class Account( AbstractUser ):
 
         else:
             return True
-
-    def get_last_messages(self):
-        """
-            Returns the last messages by the user.
-        """
-        messages = self.posts.all().order_by( '-date_created' )
-
-        return messages[ :5 ]
-
-    def get_last_following_messages(self):
-        """
-            Returns the last messages written by users we're following.
-        """
-        followingUsers = self.following.all()
-        messages = []
-
-            # get last 5 posts of each
-        for following in followingUsers:
-            messages.extend( following.posts.all()[ :5 ] )
-
-        utilities.sort_by_date( messages )
-
-        return messages[ :5 ]
 
     def __str__(self):
         return self.username

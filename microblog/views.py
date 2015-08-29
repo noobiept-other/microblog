@@ -11,11 +11,14 @@ from microblog import utilities
 from microblog.models import Post, Category
 
 
-@login_required
 def home( request ):
 
-    following = request.user.following.all()
-    posts = Post.objects.filter( user__in= following ).order_by( '-date_created' )
+    if request.user.is_authenticated():
+        following = request.user.following.all()
+        posts = Post.objects.filter( user__in= following ).order_by( '-date_created' )
+
+    else:
+        posts = Post.objects.all()
 
     paginator = Paginator( posts, 5 )
     page = request.GET.get( 'page' )
@@ -134,7 +137,6 @@ def set_follow( request, username ):
         return HttpResponseRedirect( reverse( 'home' ) )
 
 
-@login_required
 def show_category( request, categoryName ):
 
     try:
@@ -164,21 +166,25 @@ def show_category( request, categoryName ):
     return render( request, 'category.html', context )
 
 
-@login_required
 def show_people( request ):
 
     userModel = get_user_model()
 
-    following = []
+    if request.user.is_authenticated():
+        following = []
 
-        # don't consider the people you're already following
-    for people in request.user.following.all():
-        following.append( people.username )
+            # don't consider the people you're already following
+        for people in request.user.following.all():
+            following.append( people.username )
 
-        # and yourself as well
-    following.append( request.user.username )
+            # and yourself as well
+        following.append( request.user.username )
 
-    allUsers = userModel.objects.exclude( username__in= following )
+        allUsers = userModel.objects.exclude( username__in= following )
+
+    else:
+        allUsers = userModel.objects.all()
+
     paginator = Paginator( allUsers, 10 )
     page = request.GET.get( 'page' )
 
@@ -199,7 +205,6 @@ def show_people( request ):
     return render( request, 'people.html', context )
 
 
-@login_required
 def show_categories( request ):
 
     categories = Category.objects.all()

@@ -19,7 +19,9 @@
     {% if messages.has_previous %}
         <a href="{{ request.path|urlencode }}?page={{ messages.previous_page_number }}">previous</a>
     {% endif %}
-    <span>Page {{ messages.number }} of {{ messages.paginator.num_pages }}</span>
+    {% if messages.number %}
+        <span>Page {{ messages.number }} of {{ messages.paginator.num_pages }}</span>
+    {% endif %}
     {% if messages.has_next %}
         <a href="{{ request.path|urlencode }}?page={{ messages.next_page_number }}">next</a>
     {% endif %}
