@@ -54,7 +54,8 @@ var data = new FormData();
 
 if ( text.value === '' )
     {
-        //HERE
+    $( '#PostDialog' ).modal( 'hide' );
+    WebSite.addErrorMessage( "Can't post empty messages." );
     return;
     }
 

@@ -53,10 +53,10 @@ def post_message( request ):
             - image (optional)
             - postIdentifier (optional)
     """
-        # check if this is a reply to another post or not, by trying to obtain the parent post object
     if not request.method == 'POST':
         return HttpResponseNotAllowed( [ 'POST' ] )
 
+        # check if this is a reply to another post or not, by trying to obtain the parent post object
     postIdentifier = request.POST.get( 'postIdentifier' )
 
     if postIdentifier:
@@ -251,30 +251,30 @@ def show_message( request, identifier ):
 
 
 def search( request ):
+    if not request.method == 'POST':
+        return HttpResponseNotAllowed( [ 'POST' ] )
 
-    if request.method != 'POST':
-        return HttpResponseForbidden( 'Post request only' )
-
-    searchText = request.POST[ 'SearchText' ]
+    searchText = request.POST.get( 'SearchText' )
+    context = {
+        'search': searchText
+    }
 
     if not searchText or len( searchText ) < 3:
-        utilities.set_message( request, 'Write a search text with 3 or more 3 characters.' )
-        return HttpResponseRedirect( reverse( 'home' ) )
+        utilities.set_message( request, 'The search text needs to have 3 or more characters.' )
 
-    userModel = get_user_model()
+    else:
+        userModel = get_user_model()
 
-    people = userModel.objects.filter( username__icontains= searchText )
-    categories = Category.objects.filter( name__icontains= searchText )
-    messages = []
+        people = userModel.objects.filter( username__icontains= searchText )
+        categories = Category.objects.filter( name__icontains= searchText )
+        messages = Post.objects.filter( text__icontains= searchText )
 
-    messages.extend( Thread.objects.filter( text__icontains= searchText ) ) #HERE
-    messages.extend( Post.objects.filter( text__icontains= searchText ) )
+        context.update({
+            'people': people,
+            'categories': categories,
+            'messages': messages
+        })
 
-    context = {
-        'search': searchText,
-        'people': people,
-        'categories': categories,
-        'messages': messages
-    }
+    utilities.get_message( request, context )
 
     return render( request, 'search.html', context )
