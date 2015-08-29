@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import login as django_login
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from accounts.forms import MyUserCreationForm, PrivateMessageForm, EditAccountForm
 from accounts.models import PrivateMessage
@@ -46,7 +47,7 @@ def login( request ):
     return django_login( request, 'accounts/login.html', extra_context= context )
 
 
-def user_page( request, username ):
+def user_page( request, username, what= None ):
     """
         The user page has information about an user account.
         Also where you can change some settings (like the password).
@@ -59,76 +60,45 @@ def user_page( request, username ):
     except userModel.DoesNotExist:
         raise Http404( "User doesn't exist." )
 
-    context = {
+    context = {}
+
+    if what == 'images':
+        allElements = user.get_messages_with_images()
+        context[ 'imagesSelected' ] = True
+
+    elif what == 'followers':
+        allElements = user.get_followers()
+        context[ 'followersSelected' ] = True
+
+    elif what == 'following':
+        allElements = user.get_following()
+        context[ 'followingSelected' ] = True
+
+    else:   # 'messages'
+        allElements = user.posts.all().order_by( '-date_created' )
+        context[ 'postSelected' ] = True
+
+
+    paginator = Paginator( allElements, 5 )
+    page = request.GET.get( 'page' )
+
+    try:
+        elements = paginator.page( page )
+
+    except PageNotAnInteger:
+        elements = paginator.page( 1 )  # first page
+
+    except EmptyPage:
+            # last page
+        elements = paginator.page( paginator.num_pages )
+
+
+    context.update({
         'pageUser': user,
         'unreadMessages': user.how_many_unread_messages(),
-        'messages': user.get_last_messages(),
-        'postSelected': True
-    }
+        'elements': elements,
+    })
 
-    utilities.get_message( request, context )
-
-    return render( request, 'accounts/user_page.html', context )
-
-
-@login_required
-def show_followers( request, username ):
-
-    userModel = get_user_model()
-
-    try:
-        user = userModel.objects.get( username= username )
-
-    except userModel.DoesNotExist:
-        raise Http404( "User doesn't exist." )
-
-    context = {
-        'pageUser': user,
-        'users': user.get_followers(),
-        'followersSelected': True
-    }
-    utilities.get_message( request, context )
-
-    return render( request, 'accounts/user_page.html', context )
-
-
-@login_required
-def show_following( request, username ):
-
-    userModel = get_user_model()
-
-    try:
-        user = userModel.objects.get( username= username )
-
-    except userModel.DoesNotExist:
-        raise Http404( "User doesn't exist." )
-
-    context = {
-        'pageUser': user,
-        'users': user.get_following(),
-        'followingSelected': True
-    }
-    utilities.get_message( request, context )
-
-    return render( request, 'accounts/user_page.html', context )
-
-
-@login_required
-def show_images( request, username ):
-
-    userModel = get_user_model()
-
-    try:
-        user = userModel.objects.get( username= username )
-
-    except userModel.DoesNotExist:
-        raise Http404( "User doesn't exist." )
-
-    context = {
-        'pageUser': user,
-        'messages': user.get_messages_with_images(),
-        'imagesSelected': True
-    }
     utilities.get_message( request, context )
 
     return render( request, 'accounts/user_page.html', context )

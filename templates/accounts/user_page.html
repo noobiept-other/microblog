@@ -82,20 +82,28 @@
         <a href="{{ pageUser.get_url }}">messages: {{ pageUser.get_message_count }}</a>
     </li>
     <li {% if imagesSelected %}class="entrySelected"{% endif %}>
-        <a href="{% url 'accounts:show_images' pageUser.username %}">images: {{ pageUser.get_images_count }}</a>
+        <a href="{% url 'accounts:user_page_specify' pageUser.username "images" %}">images: {{ pageUser.get_images_count }}</a>
     </li>
     <li {% if followersSelected %}class="entrySelected"{% endif %}>
-        <a href="{% url 'accounts:show_followers' pageUser.username %}">Followers: {{ pageUser.get_followers.count }}</a>
+        <a href="{% url 'accounts:user_page_specify' pageUser.username "followers" %}">Followers: {{ pageUser.get_followers.count }}</a>
     </li>
     <li {% if followingSelected %}class="entrySelected"{% endif %}>
-        <a href="{% url 'accounts:show_following' pageUser.username %}">Following: {{ pageUser.get_following.count }}</a>
+        <a href="{% url 'accounts:user_page_specify' pageUser.username "following" %}">Following: {{ pageUser.get_following.count }}</a>
     </li>
 </ul>
 
 {% if postSelected or imagesSelected %}
-    {% include "messages.html" %}
+    {% include "messages.html" with messages=elements %}
 {% elif followersSelected or followingSelected %}
-    {% include "users.html" %}
+    {% include "users.html" with users=elements %}
+{% endif %}
+
+{% if elements.has_previous %}
+    <a href="{{ request.path|urlencode }}?page={{ elements.previous_page_number }}">previous</a>
+{% endif %}
+<span>Page {{ elements.number }} of {{ elements.paginator.num_pages }}</span>
+{% if elements.has_next %}
+    <a href="{{ request.path|urlencode }}?page={{ elements.next_page_number }}">next</a>
 {% endif %}
 
 {% endblock %}

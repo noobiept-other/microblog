@@ -10,9 +10,7 @@ urlpatterns = [
     url( r'^login$', accounts.views.login, name= 'login' ),
     url( r'^logout$', django.contrib.auth.views.logout, name= 'logout' ),
     url( r'^user/(?P<username>\w+)$', accounts.views.user_page, name= 'user_page' ),
-    url( r'^user/(?P<username>\w+)/followers$', accounts.views.show_followers, name= 'show_followers' ),
-    url( r'^user/(?P<username>\w+)/following$', accounts.views.show_following, name= 'show_following' ),
-    url( r'^user/(?P<username>\w+)/show_images$', accounts.views.show_images, name= 'show_images' ),
+    url( r'^user/(?P<username>\w+)/(?P<what>\w+)$', accounts.views.user_page, name= 'user_page_specify' ),
     url( r'^edit_account$', accounts.views.edit_account, name= 'edit' ),
 
         # Add/Remove Moderator Rights

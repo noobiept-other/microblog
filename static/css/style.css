@@ -20,6 +20,21 @@ td, th
 
     /* Top Menu */
 
+#PostButton
+    {
+    margin: 2px;
+    }
+
+#Menu form
+    {
+    display: inline-block;
+    }
+
+#SearchForm
+    {
+    margin-right: 0;
+    }
+
 .Message
     {
     cursor: pointer;
@@ -200,10 +215,8 @@ td, th
     border-bottom: none;
     }
 
-#PostButton
-    {
-    margin: 2px;
-    }
+
+    /* Post Dialog */
 
 #PostText
     {
@@ -215,19 +228,10 @@ td, th
     display: inline-block;
     }
 
-#Menu form
-    {
-    display: inline-block;
-    }
 
-#SearchForm
-    {
-    margin-right: 0;
-    }
+    /* Category Page */
 
 #CategoryHeader
     {
     text-align: center;
     }
-
-

@@ -29,6 +29,9 @@ def category_links( text ):
 @register.filter
 def is_following( user, userToCheck ):
 
+    if user.is_anonymous():
+        return False
+
     return user.is_following( userToCheck )
 
 
