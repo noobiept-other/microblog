@@ -12,6 +12,9 @@ admin.site.register( Post, PostAdmin )
 
 class CategoryAdmin( admin.ModelAdmin ):
 
-    list_display = ( 'name', )
+    list_display = ( 'name', 'post_count' )
+
+    def post_count(self, instance):
+       return instance.posts.count()
 
 admin.site.register( Category, CategoryAdmin )

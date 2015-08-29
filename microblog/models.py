@@ -26,7 +26,7 @@ class Post( models.Model ):
     text = models.TextField( max_length= POST_MAX_LENGTH )
     image = models.FileField( upload_to= 'images/%Y_%m_%d', blank= True )
     date_created = models.DateTimeField( default= timezone.now )
-    categories = models.ManyToManyField( Category )
+    categories = models.ManyToManyField( Category, related_name= 'posts' )
     reply_to = models.ForeignKey( 'self', related_name= 'replies', blank= True, null= True )
     identifier = models.UUIDField( unique= True, default= uuid.uuid4 )
 

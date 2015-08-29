@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count
 
 import re
 
@@ -145,7 +146,7 @@ def show_category( request, categoryName ):
     except Category.DoesNotExist:
         raise Http404( "Category doesn't exist." )
 
-    allMessages = category.post_set.all().order_by( '-date_created' )
+    allMessages = category.posts.all().order_by( '-date_created' )
     paginator = Paginator( allMessages, 5 )
     page = request.GET.get( 'page' )
 
@@ -207,7 +208,20 @@ def show_people( request ):
 
 def show_categories( request ):
 
-    categories = Category.objects.all()
+        # show only non-empty categories
+    allCategories = Category.objects.annotate( posts_count= Count( 'posts' ) ).filter( posts_count__gt= 0 ).order_by( '-posts_count' )
+
+    paginator = Paginator( allCategories, 10 )
+    page = request.GET.get( 'page' )
+
+    try:
+        categories = paginator.page( page )
+
+    except PageNotAnInteger:
+        categories = paginator.page( 1 )  # first page
+
+    except EmptyPage:
+        categories = paginator.page( paginator.num_pages )  # last page
 
     context = {
         'categories': categories
