@@ -89,8 +89,7 @@ def user_page( request, username, what= None ):
         elements = paginator.page( 1 )  # first page
 
     except EmptyPage:
-            # last page
-        elements = paginator.page( paginator.num_pages )
+        elements = paginator.page( paginator.num_pages )  # last page
 
 
     context.update({

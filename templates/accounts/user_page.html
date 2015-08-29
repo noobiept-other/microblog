@@ -98,12 +98,4 @@
     {% include "users.html" with users=elements %}
 {% endif %}
 
-{% if elements.has_previous %}
-    <a href="{{ request.path|urlencode }}?page={{ elements.previous_page_number }}">previous</a>
-{% endif %}
-<span>Page {{ elements.number }} of {{ elements.paginator.num_pages }}</span>
-{% if elements.has_next %}
-    <a href="{{ request.path|urlencode }}?page={{ elements.next_page_number }}">next</a>
-{% endif %}
-
 {% endblock %}

@@ -3,19 +3,35 @@ from django.http import Http404, HttpResponseRedirect, HttpResponseForbidden, Ht
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import re
 
 from microblog import utilities
-from microblog.forms import PostForm
 from microblog.models import Post, Category
 
 
 @login_required
 def home( request ):
 
+    following = request.user.following.all()
+    posts = Post.objects.filter( user__in= following ).order_by( '-date_created' )
+
+    paginator = Paginator( posts, 5 )
+    page = request.GET.get( 'page' )
+
+    try:
+        messages = paginator.page( page )
+
+    except PageNotAnInteger:
+        messages = paginator.page( 1 )  # first page
+
+    except EmptyPage:
+        messages = paginator.page( paginator.num_pages )  # last page
+
+
     context = {
-        'messages': request.user.get_last_following_messages()
+        'messages': messages
     }
 
     utilities.get_message( request, context )
@@ -127,7 +143,18 @@ def show_category( request, categoryName ):
     except Category.DoesNotExist:
         raise Http404( "Category doesn't exist." )
 
-    messages = category.post_set.all().order_by( '-date_created' )
+    allMessages = category.post_set.all().order_by( '-date_created' )
+    paginator = Paginator( allMessages, 5 )
+    page = request.GET.get( 'page' )
+
+    try:
+        messages = paginator.page( page )
+
+    except PageNotAnInteger:
+        messages = paginator.page( 1 )  # first page
+
+    except EmptyPage:
+        messages = paginator.page( paginator.num_pages )  # last page
 
     context = {
         'categoryName': categoryName,
@@ -151,12 +178,26 @@ def show_people( request ):
         # and yourself as well
     following.append( request.user.username )
 
+    allUsers = userModel.objects.exclude( username__in= following )
+    paginator = Paginator( allUsers, 10 )
+    page = request.GET.get( 'page' )
+
+    try:
+        users = paginator.page( page )
+
+    except PageNotAnInteger:
+        users = paginator.page( 1 )  # first page
+
+    except EmptyPage:
+        users = paginator.page( paginator.num_pages )  # last page
+
     context = {
-        'users': userModel.objects.exclude( username__in= following )
+        'users': users
     }
     utilities.get_message( request, context )
 
     return render( request, 'people.html', context )
+
 
 @login_required
 def show_categories( request ):
