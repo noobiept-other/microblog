@@ -12,6 +12,10 @@ $( '#PostDialog' ).on( 'hide.bs.modal', function( event )
     {
     POST_IDENTIFIER = null;
     });
+$( '#RemoveDialog' ).on( 'hide.bs.modal', function( event )
+    {
+    POST_IDENTIFIER = null;
+    });
 
 MESSAGE_CONTAINER = document.getElementById( 'MessageContainer' );
 });
@@ -41,6 +45,17 @@ $( '#PostDialog' ).modal( 'show' );
 
 
 /**
+ * Confirm the post removal.
+ */
+WebSite.openRemoveDialog = function( postIdentifier )
+{
+POST_IDENTIFIER = postIdentifier;
+
+$( '#RemoveDialog' ).modal( 'show' );
+};
+
+
+/**
  * Adds a post, and redirects to it.
  */
 WebSite.addPost = function( event )
@@ -48,6 +63,7 @@ WebSite.addPost = function( event )
 var text = document.getElementById( 'PostText' );
 var image = document.getElementById( 'PostImage' );
 var button = event.target;
+var prevButtonText = button.innerHTML;
 
     // get the relevant data
 var data = new FormData();
@@ -79,7 +95,7 @@ button.innerHTML = 'Posting..';
 
 $.ajax({
         method: 'POST',
-        url: '/post',
+        url: '/post/add',
         data: data,
         processData: false,
         contentType: false,
@@ -93,7 +109,42 @@ $.ajax({
             WebSite.addErrorMessage( 'Failed to send the message.' );
 
             $( '#PostDialog' ).modal( 'hide' );
-            button.innerHTML = 'Post';
+            button.innerHTML = prevButtonText;
+            }
+    });
+};
+
+
+/**
+ * Remove the post specified in the 'POST_IDENTIFIER' variable.
+ */
+WebSite.removePost = function( event )
+{
+var button = event.target;
+var data = new FormData();
+var prevButtonText = button.innerHTML;
+
+data.append( 'postIdentifier', POST_IDENTIFIER );
+
+button.innerHTML = 'Removing..';
+
+$.ajax({
+        method: 'POST',
+        url: '/post/remove?next=' + window.location.pathname,
+        data: data,
+        processData: false,
+        contentType: false,
+        success: function( data, textStatus, jqXHR )
+            {
+            window.location = data.url;
+            },
+        error: function( jqXHR, textStatus, errorThrown )
+            {
+            console.log( jqXHR, textStatus, errorThrown );
+            WebSite.addErrorMessage( 'Failed to remove the message.' );
+
+            $( '#RemoveDialog' ).modal( 'hide' );
+            button.innerHTML = prevButtonText;
             }
     });
 };

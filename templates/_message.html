@@ -28,6 +28,9 @@
                         ({{ message.replies.count }})
                     {% endif %}
                 </li>
+                {% if request.user == message.user %}
+                    <li><a href="#" onclick="WebSite.openRemoveDialog('{{ message.identifier }}');">remove</a></li>
+                {% endif %}
             </ul>
         </div>
     </td>

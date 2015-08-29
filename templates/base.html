@@ -74,6 +74,20 @@
     </div>
 </div>
 
+<div id="RemoveDialog" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                Remove the message?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" onclick="WebSite.removePost(event);">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 {% block content %}{% endblock %}
 

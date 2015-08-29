@@ -44,7 +44,7 @@ def home( request ):
 
 
 @login_required
-def post_message( request ):
+def add_post( request ):
     """
         Add a new post.
         It can be an independent post, or a reply to another post (known by the 'postIdentifier' argument).
@@ -98,6 +98,40 @@ def post_message( request ):
 
 
     return JsonResponse({ 'url': message.get_url() })
+
+
+@login_required
+def remove_post( request ):
+    """
+        Remove a post.
+
+        Requires a POST request with the following arguments:
+            - postIdentifier
+    """
+    if not request.method == 'POST':
+        return HttpResponseNotAllowed( [ 'POST' ] )
+
+    postIdentifier = request.POST.get( 'postIdentifier' )
+
+    if not postIdentifier:
+        return HttpResponseBadRequest( "Need a 'postIdentifier' argument." )
+
+    try:
+        post = request.user.posts.get( identifier= postIdentifier )
+
+    except Post.DoesNotExist:
+        return HttpResponseBadRequest( "Invalid 'postIdentifier' argument." )
+
+    post.delete()
+
+    nextUrl = request.GET.get( 'next' )
+
+    if not nextUrl:
+        nextUrl = reverse( 'home' )
+
+    utilities.set_message( request, 'Message removed!' )
+
+    return JsonResponse({ 'url': nextUrl })
 
 
 @login_required
@@ -163,6 +197,7 @@ def show_category( request, categoryName ):
         'categoryName': categoryName,
         'messages': messages
     }
+    utilities.get_message( request, context )
 
     return render( request, 'category.html', context )
 
@@ -236,7 +271,8 @@ def show_message( request, identifier ):
         post = Post.objects.get( identifier= identifier )
 
     except Post.DoesNotExist:
-        raise Http404( "Invalid identifier." )
+        utilities.set_message( request, "Couldn't open the message." )
+        return HttpResponseRedirect( reverse( 'home' ) )
 
     messages = []
     replies = []
