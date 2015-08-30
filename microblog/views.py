@@ -38,7 +38,7 @@ def home( request ):
         'messages': messages
     }
 
-    utilities.get_message( request, context )
+    utilities.get_messages( request, context )
 
     return render( request, 'home.html', context )
 
@@ -129,7 +129,7 @@ def remove_post( request ):
     if not nextUrl:
         nextUrl = reverse( 'home' )
 
-    utilities.set_message( request, 'Message removed!' )
+    utilities.add_message( request, 'Message removed!' )
 
     return JsonResponse({ 'url': nextUrl })
 
@@ -156,12 +156,12 @@ def set_follow( request, username ):
     except userModel.DoesNotExist:
         request.user.following.add( userToFollow )
 
-        utilities.set_message( request, '{} followed'.format( userToFollow ) )
+        utilities.add_message( request, '{} followed'.format( userToFollow ) )
 
     else:
         request.user.following.remove( userToFollow )
 
-        utilities.set_message( request, '{} un-followed'.format( userToFollow ) )
+        utilities.add_message( request, '{} un-followed'.format( userToFollow ) )
 
     nextUrl = request.GET.get( 'next' )
 
@@ -197,7 +197,7 @@ def show_category( request, categoryName ):
         'categoryName': categoryName,
         'messages': messages
     }
-    utilities.get_message( request, context )
+    utilities.get_messages( request, context )
 
     return render( request, 'category.html', context )
 
@@ -236,7 +236,7 @@ def show_people( request ):
     context = {
         'users': users
     }
-    utilities.get_message( request, context )
+    utilities.get_messages( request, context )
 
     return render( request, 'people.html', context )
 
@@ -271,7 +271,7 @@ def show_message( request, identifier ):
         post = Post.objects.get( identifier= identifier )
 
     except Post.DoesNotExist:
-        utilities.set_message( request, "Couldn't open the message." )
+        utilities.add_message( request, "Couldn't open the message.", utilities.MessageType.error )
         return HttpResponseRedirect( reverse( 'home' ) )
 
     messages = []
@@ -310,7 +310,7 @@ def search( request ):
     }
 
     if not searchText or len( searchText ) < 3:
-        utilities.set_message( request, 'The search text needs to have 3 or more characters.' )
+        utilities.add_message( request, 'The search text needs to have 3 or more characters.' )
 
     else:
         userModel = get_user_model()
@@ -325,6 +325,6 @@ def search( request ):
             'messages': messages
         })
 
-    utilities.get_message( request, context )
+    utilities.get_messages( request, context )
 
     return render( request, 'search.html', context )

@@ -17,7 +17,7 @@ $( '#RemoveDialog' ).on( 'hide.bs.modal', function( event )
     POST_IDENTIFIER = null;
     });
 
-MESSAGE_CONTAINER = document.getElementById( 'MessageContainer' );
+MESSAGE_CONTAINER = document.getElementById( 'MessagesContainer' );
 });
 
 

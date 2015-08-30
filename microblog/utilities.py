@@ -1,33 +1,36 @@
-from operator import attrgetter
+from enum import IntEnum
 
 
-def sort_by_date( messages, recentFirst= True ):
+class MessageType( IntEnum ):
+    normal = 0
+    error = 1
+
+
+def get_messages( request, context ):
     """
-        Sort a list by the 'date_created' attribute.
+        Checks the session to see if there are messages to be displayed, and if so adds them to the context object (don't forget, it changes the object from where its called).
     """
-    if recentFirst:
-        messages.sort( key= attrgetter( 'date_created' ), reverse= True )
+    messages = request.session.get( 'MESSAGES' )
 
-    else:
-        messages.sort( key= attrgetter( 'date_created' ) )
+    if messages:
 
-    return messages
+        context[ 'MESSAGES' ] = messages
+        request.session[ 'MESSAGES' ] = []
 
 
-def get_message( request, context ):
+def add_message( request, message, messageType= MessageType.normal ):
     """
-        Checks the session to see if there's a message, and if so adds to the context object (don't forget, it changes the object from where its called).
+        Add a message to the session (can be called multiple times).
+        All the messages will be displayed the next time a page is loaded (when get_messages() is called).
     """
-    message = request.session.get( 'MESSAGE' )
+    if 'MESSAGES' not in request.session:
+        request.session[ 'MESSAGES' ] = []
 
-    if message:
-
-        context[ 'MESSAGE' ] = message
-        del request.session[ 'MESSAGE' ]
-
-
-def set_message( request, message ):
-    """
-        Add a message to the session (will be displayed in the next page loaded).
-    """
-    request.session[ 'MESSAGE' ] = message
+        # careful, if you have a list in the session, append operations aren't saved
+        # need to copy the list to variable, do the operation and then add to the session
+    messages = request.session[ 'MESSAGES' ]
+    messages.append({
+        'message': message,
+        'type': messageType.name
+    })
+    request.session[ 'MESSAGES' ] = messages

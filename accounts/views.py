@@ -23,7 +23,7 @@ def new_account( request ):
         if form.is_valid():
 
             form.save()
-            utilities.set_message( request, "User '{}' created!".format(  form.cleaned_data[ 'username' ] ) )
+            utilities.add_message( request, "User '{}' created!".format(  form.cleaned_data[ 'username' ] ) )
 
             return HttpResponseRedirect( reverse( 'accounts:login' ) )
 
@@ -42,7 +42,7 @@ def login( request ):
         Login an account.
     """
     context = {}
-    utilities.get_message( request, context )
+    utilities.get_messages( request, context )
 
     return django_login( request, 'accounts/login.html', extra_context= context )
 
@@ -98,7 +98,7 @@ def user_page( request, username, what= None ):
         'elements': elements,
     })
 
-    utilities.get_message( request, context )
+    utilities.get_messages( request, context )
 
     return render( request, 'accounts/user_page.html', context )
 
@@ -126,7 +126,7 @@ def message_send( request, username ):
             content = form.cleaned_data[ 'content' ]
             PrivateMessage.objects.create( receiver= user, sender= request.user, title= title, content= content )
 
-            utilities.set_message( request, 'Message sent to {}!'.format( user ) )
+            utilities.add_message( request, 'Message sent to {}!'.format( user ) )
 
             return HttpResponseRedirect( user.get_url() )
 
@@ -150,7 +150,7 @@ def message_all( request ):
         'messages': messages
     }
 
-    utilities.get_message( request, context )
+    utilities.get_messages( request, context )
 
     return render( request, 'accounts/check_messages.html', context )
 
@@ -208,7 +208,7 @@ def message_remove( request, messageId ):
         raise Http404( "Message doesn't exist." )
 
     message.delete()
-    utilities.set_message( request, 'Message removed!' )
+    utilities.add_message( request, 'Message removed!' )
 
     return HttpResponseRedirect( reverse( 'accounts:message_all' ) )
 
@@ -255,7 +255,7 @@ def set_moderator( request, username ):
     else:
         message = "'{}' is not a moderator anymore.".format( user )
 
-    utilities.set_message( request, message )
+    utilities.add_message( request, message )
 
     return HttpResponseRedirect( user.get_url() )
 
@@ -264,7 +264,7 @@ def password_changed( request ):
     """
         Inform that the password has been changed, and redirect to home.
     """
-    utilities.set_message( request, 'Password changed!' )
+    utilities.add_message( request, 'Password changed!' )
 
     return HttpResponseRedirect( reverse( 'home' ) )
 
@@ -336,7 +336,7 @@ def remove_user( request, username ):
         raise Http404( "User doesn't exist." )
 
     else:
-        utilities.set_message( request, "'{}' user removed!".format( user ) )
+        utilities.add_message( request, "'{}' user removed!".format( user ) )
         user.delete()
 
         return HttpResponseRedirect( reverse( 'home' ) )
@@ -400,6 +400,6 @@ def disable_user( request, username ):
         else:
             message = "'{}' account is now disabled.".format( user )
 
-        utilities.set_message( request, message )
+        utilities.add_message( request, message )
 
         return HttpResponseRedirect( user.get_url() )
