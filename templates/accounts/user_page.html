@@ -79,7 +79,7 @@
 
 <ul class="horizontalList">
     <li {% if postSelected %}class="entrySelected"{% endif %}>
-        <a href="{{ pageUser.get_url }}">messages: {{ pageUser.get_message_count }}</a>
+        <a href="{{ pageUser.get_url }}">posts: {{ pageUser.posts.count }}</a>
     </li>
     <li {% if imagesSelected %}class="entrySelected"{% endif %}>
         <a href="{% url 'accounts:user_page_specify' pageUser.username "images" %}">images: {{ pageUser.get_images_count }}</a>
@@ -93,7 +93,7 @@
 </ul>
 
 {% if postSelected or imagesSelected %}
-    {% include "messages.html" with messages=elements %}
+    {% include "posts.html" with posts=elements %}
 {% elif followersSelected or followingSelected %}
     {% include "users.html" with users=elements %}
 {% endif %}

@@ -63,7 +63,7 @@ def user_page( request, username, what= None ):
     context = {}
 
     if what == 'images':
-        allElements = user.get_messages_with_images()
+        allElements = user.get_posts_with_images()
         context[ 'imagesSelected' ] = True
 
     elif what == 'followers':
@@ -143,7 +143,9 @@ def message_send( request, username ):
 
 @login_required
 def message_all( request ):
-
+    """
+        Get a list of all the private messages available.
+    """
     messages = request.user.privatemessage_set.all()
 
     context = {
@@ -271,7 +273,9 @@ def password_changed( request ):
 
 @login_required
 def edit_account( request ):
-
+    """
+        Page where some information about the user can be changed.
+    """
     if request.method == 'POST':
 
         form = EditAccountForm( request.POST, request.FILES )

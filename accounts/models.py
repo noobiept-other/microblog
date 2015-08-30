@@ -42,9 +42,6 @@ class Account( AbstractUser ):
     def get_following(self):
         return self.following.all()
 
-    def get_message_count(self):
-        return self.posts.count()
-
     def get_images_count(self):
         count = 0
 
@@ -54,15 +51,14 @@ class Account( AbstractUser ):
 
         return count
 
-    def get_messages_with_images(self):
-
-        messages = []
+    def get_posts_with_images(self):
+        posts = []
 
         for post in self.posts.all():
             if post.image:
-                messages.append( post )
+                posts.append( post )
 
-        return messages
+        return posts
 
     def is_following(self, username):
         userModel = get_user_model()

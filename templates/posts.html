@@ -1,0 +1,30 @@
+{% load humanize %}
+{% load microblog_filters %}
+
+{% if posts %}
+    <table id="PostTable">
+        {% for post in posts %}
+            {% if post == selected_post %}
+                {% include "_post.html" with post=post post_id="SelectedPost" %}
+
+                {% for reply in replies %}
+                    {% include "_post.html" with post=reply post_class="replyPost" %}
+                {% endfor %}
+            {% else %}
+                {% include "_post.html" with post=post %}
+            {% endif %}
+        {% endfor %}
+    </table>
+
+    {% if posts.has_previous %}
+        <a href="{{ request.path|urlencode }}?page={{ posts.previous_page_number }}">previous</a>
+    {% endif %}
+    {% if posts.number %}
+        <span>Page {{ posts.number }} of {{ posts.paginator.num_pages }}</span>
+    {% endif %}
+    {% if posts.has_next %}
+        <a href="{{ request.path|urlencode }}?page={{ posts.next_page_number }}">next</a>
+    {% endif %}
+{% else %}
+    <p>No posts yet. Try to follow <a href="{% url 'people' %}">some people.</a></p>
+{% endif %}

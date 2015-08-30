@@ -4,24 +4,24 @@ from django.utils.safestring import mark_safe
 
 import re
 
+
 register = template.Library()
+
+
+def _addLink( match ):
+
+    category = match.group( 1 )
+    url = reverse( 'show_category', args= [ category ] )
+
+    return '<a href="{}">#{}</a>'.format( url, category )
+
 
 @register.filter
 def category_links( text ):
     """
         Receives a text, search for the categories (in the form: #categoryName), and replaces it with a <a> tag with the appropriate link
-    :param text:
-    :return:
     """
-
-    def addLink( match ):
-
-        category = match.group( 1 )
-        url = reverse( 'show_category', args= [ category ] )
-
-        return '<a href="{}">#{}</a>'.format( url, category )
-
-    result = re.sub( r'#(\w+)', addLink, text )
+    result = re.sub( r'#(\w+)', _addLink, text )
 
     return mark_safe( result )
 

@@ -30,10 +30,10 @@
 
 <h2>Messages</h2>
 
-{% if messages %}
-    {% for message in messages %}
+{% if posts %}
+    {% for post in posts %}
     <ul>
-        <li><a href="{{ message.get_url }}">{{ message }}</a></li>
+        <li><a href="{{ post.get_url }}">{{ post }}</a></li>
     </ul>
     {% endfor %}
 {% else %}

@@ -16,12 +16,12 @@ urlpatterns = [
 
     url( r'^post/add$', microblog.views.add_post, name= 'add_post' ),
     url( r'^post/remove$', microblog.views.remove_post, name= 'remove_post' ),
+    url( r'^post/show/(?P<identifier>[\w-]+)$', microblog.views.show_post, name='show_post'),
 
     url( r'^follow/(?P<username>\w+)$', microblog.views.set_follow, name= 'follow' ),
     url( r'^category/(?P<categoryName>\w+)$', microblog.views.show_category, name= 'show_category' ),
     url( r'^people$', microblog.views.show_people, name= 'people' ),
     url( r'^categories$', microblog.views.show_categories, name= 'categories' ),
-    url( r'^message/(?P<identifier>[\w-]+)$', microblog.views.show_message, name= 'show_message' ),
     url( r'^search$', microblog.views.search, name= 'search' ),
 
     url( r'^accounts/', include( accounts.urls, namespace= 'accounts', app_name= 'accounts' ) ),

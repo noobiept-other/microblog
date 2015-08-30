@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import Http404, HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed, JsonResponse, HttpResponseBadRequest
+from django.http import Http404, HttpResponseRedirect, HttpResponseNotAllowed, JsonResponse, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
@@ -13,7 +13,9 @@ from microblog.models import Post, Category
 
 
 def home( request ):
-
+    """
+        Show the latest posts, either from all the users (if there's no one logged in), or from the users you're following.
+    """
     if request.user.is_authenticated():
         following = request.user.following.all()
         posts = Post.objects.filter( user__in= following ).order_by( '-date_created' )
@@ -21,21 +23,21 @@ def home( request ):
     else:
         posts = Post.objects.all()
 
-    paginator = Paginator( posts, 5 )
+    paginator = Paginator( posts, 10 )
     page = request.GET.get( 'page' )
 
     try:
-        messages = paginator.page( page )
+        paginatedPosts = paginator.page( page )
 
     except PageNotAnInteger:
-        messages = paginator.page( 1 )  # first page
+        paginatedPosts = paginator.page( 1 )  # first page
 
     except EmptyPage:
-        messages = paginator.page( paginator.num_pages )  # last page
+        paginatedPosts = paginator.page( paginator.num_pages )  # last page
 
 
     context = {
-        'messages': messages
+        'posts': paginatedPosts
     }
 
     utilities.get_messages( request, context )
@@ -80,10 +82,10 @@ def add_post( request ):
     image = request.FILES.get( 'image' )
 
     if parent:
-        message = Post.objects.create( user= request.user, text= text, image= image, reply_to= parent )
+        post = Post.objects.create( user= request.user, text= text, image= image, reply_to= parent )
 
     else:
-        message = Post.objects.create( user= request.user, text= text, image= image )
+        post = Post.objects.create( user= request.user, text= text, image= image )
 
 
     for category in categories:
@@ -94,10 +96,10 @@ def add_post( request ):
         except Category.DoesNotExist:
             categoryElement = Category.objects.create( name= category )
 
-        message.categories.add( categoryElement )
+        post.categories.add( categoryElement )
 
 
-    return JsonResponse({ 'url': message.get_url() })
+    return JsonResponse({ 'url': post.get_url() })
 
 
 @login_required
@@ -136,11 +138,13 @@ def remove_post( request ):
 
 @login_required
 def set_follow( request, username ):
-
+    """
+        Follow or un-follow an user.
+    """
     userModel = get_user_model()
 
     if username == request.user.username:
-        raise Http404( "Can't follow yourself." )
+        return HttpResponseBadRequest( "Can't follow yourself." )
 
     try:
         userToFollow = userModel.objects.get( username= username )
@@ -173,29 +177,31 @@ def set_follow( request, username ):
 
 
 def show_category( request, categoryName ):
-
+    """
+        Show all the posts of the given category.
+    """
     try:
         category = Category.objects.get( name= categoryName )
 
     except Category.DoesNotExist:
         raise Http404( "Category doesn't exist." )
 
-    allMessages = category.posts.all().order_by( '-date_created' )
-    paginator = Paginator( allMessages, 5 )
+    allPosts = category.posts.all().order_by( '-date_created' )
+    paginator = Paginator( allPosts, 5 )
     page = request.GET.get( 'page' )
 
     try:
-        messages = paginator.page( page )
+        posts = paginator.page( page )
 
     except PageNotAnInteger:
-        messages = paginator.page( 1 )  # first page
+        posts = paginator.page( 1 )  # first page
 
     except EmptyPage:
-        messages = paginator.page( paginator.num_pages )  # last page
+        posts = paginator.page( paginator.num_pages )  # last page
 
     context = {
         'categoryName': categoryName,
-        'messages': messages
+        'posts': posts
     }
     utilities.get_messages( request, context )
 
@@ -203,7 +209,9 @@ def show_category( request, categoryName ):
 
 
 def show_people( request ):
-
+    """
+        If there's a user logged in, show a list of users that can be followed, otherwise just show a list of all the users.
+    """
     userModel = get_user_model()
 
     if request.user.is_authenticated():
@@ -242,7 +250,9 @@ def show_people( request ):
 
 
 def show_categories( request ):
-
+    """
+        Show a list with all the non-empty categories.
+    """
         # show only non-empty categories
     allCategories = Category.objects.annotate( posts_count= Count( 'posts' ) ).filter( posts_count__gt= 0 ).order_by( '-posts_count' )
 
@@ -265,8 +275,11 @@ def show_categories( request ):
     return render( request, 'categories.html', context )
 
 
-def show_message( request, identifier ):
-
+def show_post( request, identifier ):
+    """
+        Shows the post plus its replies.
+        If this post was a reply to other post, then show the parent post and its replies as well.
+    """
     try:
         post = Post.objects.get( identifier= identifier )
 
@@ -274,33 +287,36 @@ def show_message( request, identifier ):
         utilities.add_message( request, "Couldn't open the message.", utilities.MessageType.error )
         return HttpResponseRedirect( reverse( 'home' ) )
 
-    messages = []
+    posts = []
     replies = []
     parent = post.reply_to
 
     if parent:
-        messages.append( parent )
+        posts.append( parent )
 
         for reply in parent.replies.all().order_by( 'date_created' ):
-            messages.append( reply )
+            posts.append( reply )
 
             if reply == post:
                 replies.extend( post.replies.all().order_by( 'date_created' ) )
 
     else:
-        messages.append( post )
+        posts.append( post )
         replies.extend( post.replies.all().order_by( 'date_created' ) )
 
     context = {
-        'messages': messages,
+        'posts': posts,
         'replies': replies,
-        'selected_message': post,
+        'selected_post': post,
     }
 
-    return render( request, 'show_message.html', context )
+    return render( request, 'show_post.html', context )
 
 
 def search( request ):
+    """
+        Search for a post, user or a category.
+    """
     if not request.method == 'POST':
         return HttpResponseNotAllowed( [ 'POST' ] )
 
@@ -317,12 +333,12 @@ def search( request ):
 
         people = userModel.objects.filter( username__icontains= searchText )
         categories = Category.objects.filter( name__icontains= searchText )
-        messages = Post.objects.filter( text__icontains= searchText )
+        posts = Post.objects.filter( text__icontains= searchText )
 
         context.update({
             'people': people,
             'categories': categories,
-            'messages': messages
+            'posts': posts
         })
 
     utilities.get_messages( request, context )

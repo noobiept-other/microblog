@@ -1,0 +1,37 @@
+{% load humanize %}
+{% load microblog_filters %}
+
+<tr class="post{% if post_class %} {{ post_class }}{% endif %}" {% if post_id %}id="{{ post_id }}"{% endif %}>
+    <td class="postProfileImage">
+    {% if post.user.image %}
+        <img src="{{ MEDIA_URL }}{{ post.user.image }}" />
+    {% endif %}
+    </td>
+    <td class="postText">
+        <div>
+            <a href="{{ post.user.get_url }}">{{ post.user.name }} ({{ post.user.username }})</a> {{ post.date_created|naturaltime }}
+        </div>
+        <div class="postText-content">
+            {{ post.text|category_links }}
+            <div>
+                {% if post.image %}
+                    <img src="{{ MEDIA_URL }}{{ post.image }}" />
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            <ul class="horizontalList">
+                <li><a href="#" onclick="WebSite.openPostDialog('{{ post.identifier }}');">reply</a></li>
+                <li>
+                    <a href="{{ post.get_url }}">open</a>
+                    {% if post.replies %}
+                        ({{ post.replies.count }})
+                    {% endif %}
+                </li>
+                {% if request.user == post.user %}
+                    <li><a href="#" onclick="WebSite.openRemoveDialog('{{ post.identifier }}');">remove</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </td>
+</tr>
