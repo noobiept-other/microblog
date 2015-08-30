@@ -154,12 +154,12 @@ td, th
 
 #SelectedPost
     {
-    background-color: rgba(74, 154, 157, 0.09);
+    background-color: rgba(74, 154, 157, 0.1);
     }
 
 .replyPost
     {
-    background-color: rgba(240, 248, 255, 0.2);
+    background-color: rgba(150, 42, 255, 0.1);
     }
 
 .postText

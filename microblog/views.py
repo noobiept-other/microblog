@@ -271,6 +271,7 @@ def show_categories( request ):
     context = {
         'categories': categories
     }
+    utilities.get_messages( request, context )
 
     return render( request, 'categories.html', context )
 
@@ -309,6 +310,7 @@ def show_post( request, identifier ):
         'replies': replies,
         'selected_post': post,
     }
+    utilities.get_messages( request, context )
 
     return render( request, 'show_post.html', context )
 

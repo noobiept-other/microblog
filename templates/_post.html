@@ -21,7 +21,9 @@
         </div>
         <div>
             <ul class="horizontalList">
-                <li><a href="#" onclick="WebSite.openPostDialog('{{ post.identifier }}');">reply</a></li>
+                {% if request.user.is_authenticated %}
+                    <li><a href="#" onclick="WebSite.openPostDialog('{{ post.identifier }}');">reply</a></li>
+                {% endif %}
                 <li>
                     <a href="{{ post.get_url }}">open</a>
                     {% if post.replies %}
