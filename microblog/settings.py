@@ -37,7 +37,7 @@ else:
 
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ 'microblog1.herokuapp.com', 'microblog1.heroku.com' ]
 
 
 INSTALLED_APPS = (
@@ -149,3 +149,13 @@ LOGOUT_URL = 'accounts:logout'
 LOGIN_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'accounts.Account'
+
+
+if not DEBUG:
+
+    # Parse database configuration from $DATABASE_URL
+    import dj_database_url
+    DATABASES[ 'default' ] =  dj_database_url.config()
+
+    # Honor the 'X-Forwarded-Proto' header for request.is_secure()
+    SECURE_PROXY_SSL_HEADER = ( 'HTTP_X_FORWARDED_PROTO', 'https' )
