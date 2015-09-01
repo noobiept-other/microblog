@@ -158,7 +158,7 @@ WebSite.addMessage = function( text )
 var message = document.createElement( 'p' );
 
 message.className = 'Message';
-message.title = 'Click to Remove'
+message.title = 'Click to Remove';
 message.addEventListener( 'click', function( event )
     {
     WebSite.removeElement( this );
